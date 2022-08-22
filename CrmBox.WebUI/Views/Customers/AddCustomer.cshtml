@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model AddCustomerVM
+@inject IViewLocalizer localizer
+<form method="post" asp-action="AddCustomer" asp-controller="Customers">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">@localizer["Müşteri Ekle"]</h3>
+        </div>
+
+        <div class="card-body" style="display: block;">
+            <div class="form-group">
+                <input asp-for="FirstName" placeholder="@localizer["İsim"]" type="text" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input asp-for="LastName" placeholder="@localizer["Soyisim"]" type="text" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Email" placeholder="@localizer["E-Posta"]" type="email" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Address" placeholder="@localizer["Adres"]" type="text" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input asp-for="CompanyName" placeholder="@localizer["Şirket"]" type="text" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input asp-for="JobTitle" placeholder="@localizer["Unvan"]" type="text" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input asp-for="PhoneNumber" placeholder="@localizer["Numara"]" type="text" class="form-control"/>
+                </div>
+            </div>
+            <div class="card-footer">
+
+                <a asp-action="GetAllCustomers" asp-controller="Customers" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
+                <input type="submit" value="@localizer["Ekle"]" class="btn btn-success col-2 float-right">
+            </div>
+        </div>
+</form>

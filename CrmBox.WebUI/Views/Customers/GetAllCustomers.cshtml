@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IQueryable<CrmBox.Core.Domain.Customer>
+@inject IViewLocalizer localizer
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title mt-2">@localizer["Müşteriler"] </h3>
+                        <a asp-action="AddCustomer" asp-controller="Customers" class="btn btn-block btn-primary col-2 float-right">@localizer["Müşteri Ekle"]</a>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>@localizer["Ad-Soyad"]</th>
+                                    <th>@localizer["Numara"]</th>
+                                    <th>@localizer["E-posta"]</th>
+                                    <th>@localizer["Şirket"]</th>
+                                    <th>@localizer["Unvan"]</th>
+                                    <th>@localizer["Adres"]</th>
+                                    <th>@localizer["Oluşturulma Tarihi"]</th>
+                                    <th>@localizer["Güncelle"]</th>
+                                    <th>@localizer["Sil"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var customer in Model)
+                                {
+                                    <tr>
+                                        <td>@customer.Id</td>
+                                        <td>@customer.FirstName @customer.LastName</td>
+                                        <td>@customer.PhoneNumber</td>
+                                        <td>@customer.Email</td>
+                                        <td>@customer.CompanyName</td>
+                                        <td>@customer.JobTitle</td>
+                                        <td>@customer.Address</td>
+                                        <td>@customer.CreatedTime</td>
+                                        <td>
+                                            <a asp-action="UpdateCustomer" asp-route-id="@customer.Id" class="btn btn-info">@localizer["Güncelle"]</a>
+                                        </td>
+                                        <td>
+                                            <a asp-action="DeleteCustomer" asp-route-id="@customer.Id" class="btn btn-danger col-10">@localizer["Sil"]</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>

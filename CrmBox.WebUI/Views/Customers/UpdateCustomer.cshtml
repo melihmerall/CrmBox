@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model CrmBox.Core.Domain.Customer
+@inject IViewLocalizer localizer
+<form method="post" asp-action="Update" asp-controller="Customers">
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.CreatedTime)
+    <div class="card card-primary m-3">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">@localizer["Numara Güncelle"]</h3>
+        </div>
+
+        <div class="card-body" style="display: block;">
+            <div class="form-group">
+                <label class="form-control">@Model.FirstName @Model.LastName</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber">@localizer["Numara"]</label>
+                <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="@Model.PhoneNumber">
+            </div>
+        </div>
+        <div class="card-footer">
+
+            <a asp-action="GetAllCustomers" asp-controller="Customers" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
+            <button type="submit" class="btn btn-success col-2 float-right">@localizer["Numara Güncelle"] </button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model AddUserVM
+@inject IViewLocalizer localizer
+<form method="post" asp-action="AddUser" asp-controller="AppUsers">
+
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">@localizer["Rol Ekle"]</h3>
+        </div>
+
+        <div class="card-body" style="display: block;">
+
+            <div class="form-group">
+                <input type="text" asp-for="FirstName" class="form-control" placeholder="@localizer["Adı"]">
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="LastName" class="form-control" placeholder="@localizer["Soyadı"]">
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="UserName" class="form-control" placeholder="@localizer["Kullanıcı Adı"]">
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
+            </div>
+
+        </div>
+
+
+        <div class="card-footer">
+
+            <a asp-action="AddUsers" asp-controller="AppUsers" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
+            <input type="submit" value="@localizer["Rol Ekle"]" class="btn btn-success col-2 float-right">
+        </div>
+    </div>
+</form>

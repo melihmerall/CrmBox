@@ -1,0 +1,23 @@
+﻿@using CrmBox.WebUI.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@model List<AssignRoleVM>
+<form method="post">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <div class="form-check">
+            <input type="hidden" asp-for="@Model[i].RoleId" />
+            <input type="hidden" asp-for="@Model[i].Name" />
+            <input type="checkbox" asp-for="@Model[i].Exist" class="form-check-input" />
+            <label class="form-check-label" for="@Model[i].Exist">@Model[i].Name</label>
+        </div>
+       
+    }
+  @*<button class="btn btn-info">Kaydet</button>*@
+  <div class=" mt-4">
+        <input type="submit" value="@localizer["Kaydet"]" class="btn btn-success col-1  m-1 ">
+   <a asp-action="GetAllUsers" asp-controller="AppUsers" class="btn btn-primary col-1  m-1  ">@localizer["Geri Dön"]</a>
+  </div>
+
+</form>
+  

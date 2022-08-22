@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<CrmBox.Core.Domain.Identity.AppUser>
+@inject IViewLocalizer localizer
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title mt-2">@localizer["Kullanıcılar"] </h3>
+                        <a asp-action="AddUser" asp-controller="AppUsers" class="btn btn-block btn-primary col-2 float-right">@localizer["Kullanıcı Ekle"]</a>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>@localizer["Kullanıcı"] Id</th>
+                                    <th>@localizer["Kullanıcı Adı"]</th>
+                                    <th>@localizer["Adı"]</th>
+                                    <th>@localizer["Soyadı"]</th>
+                                    <th>@localizer["Rol İşlemleri"]</th>
+                                    <th>@localizer["Güncelle"]</th>
+                                    <th>@localizer["Sil"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td>@user.Id</td>
+                                        <td>@user.UserName</td>
+                                        <td>@user.FirstName</td>
+                                        <td>@user.LastName</td>
+
+                                        <td>
+                                            <a asp-action="AssignUserRole" asp-controller="AppRoles" asp-route-id="@user.Id" class="btn btn-success">@localizer["Rol Ata"]</a>
+                                        </td>
+
+                                        <td>
+                                            <a asp-action="UpdateUser" asp-route-id="@user.Id" class="btn btn-info">@localizer["Güncelle"]</a>
+                                        </td>
+                                        <td>
+                                            <a asp-action="DeleteUser" asp-route-id="@user.Id" class="btn btn-danger col-10">@localizer["Sil"]</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>@localizer["Kullanıcı"] Id</th>
+                                    <th>@localizer["Kullanıcı Adı"]</th>
+                                    <th>@localizer["Adı"]</th>
+                                    <th>@localizer["Soyadı"]</th>
+                                    <th>@localizer["Rol İşlemleri"]</th>
+                                    <th>@localizer["Güncelle"]</th>
+                                    <th>@localizer["Sil"]</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>

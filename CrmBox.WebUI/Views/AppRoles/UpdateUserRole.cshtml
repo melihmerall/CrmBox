@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model AddRoleVM
+@inject IViewLocalizer localizer
+<form method="post" asp-action="UpdateUserRole" asp-controller="AppRoles">
+    @Html.HiddenFor(x => x.Id)
+    <div class="card card-primary m-3" />
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">@localizer["Rol Güncelle"]</h3>
+        </div>
+        <div class="card-body" style="display: block;">
+
+            <div class="form-group">
+                <label asp-for="Name">@localizer["Rol"]</label>
+                <input type="text" asp-for="Name" class="form-control" placeholder="@Model.Name">
+            </div>
+@*            <div class="form-group">
+                <label>@localizer["İzinler"]</label>
+                <select asp-for="Policies" class="form-control">
+                    @foreach (var policy in Model.Policies)
+                    {
+                    <option onselect="@policy.IsSelected=true">@policy.Policy</option>
+                    }
+                </select>
+            </div>*@
+
+        <div class="card-footer">
+            <a asp-action="GetAllUserRoles" asp-controller="AppRoles" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
+            <button type="submit" class="btn btn-success col-2 float-right">@localizer["Rol Güncelle"] </button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    @{ await Html.RenderPartialAsync("_head");}
+</head>
+<body>
+<div class="wrapper">
+    <header>
+        @{await Html.RenderPartialAsync("_navbar");}
+        @{await Html.RenderPartialAsync("_sidebar");}
+        
+    </header>
+    <div class="content-wrapper">
+        <main role="main" class="p-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        @{await Html.RenderPartialAsync("_footer");}
+    </footer>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+  
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.min.js"></script>
+   
+    @await RenderSectionAsync("Scripts", required: false)
+</div>
+</body>
+</html>
