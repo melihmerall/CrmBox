@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Moderator")]
     public class AppUsersController : Controller
     {
         
@@ -24,7 +24,7 @@ namespace CrmBox.WebUI.Controllers
 
         [HttpGet]
 
-        [Authorize(Roles = "Admin")]
+
         public IActionResult GetAllUsers()
         {
 

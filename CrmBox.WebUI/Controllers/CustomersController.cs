@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Moderator")]
     
     public class CustomersController : Controller
     {
@@ -28,14 +28,14 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+       
         public IActionResult AddCustomer()
         {
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+    
         public async Task<IActionResult> AddCustomer(AddCustomerVM model)
         {
             if (ModelState.IsValid)

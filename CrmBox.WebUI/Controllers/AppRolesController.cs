@@ -9,12 +9,12 @@ using System.Security.Claims;
 namespace CrmBox.WebUI.Controllers
 {
     
-    [Authorize(Roles = "Admin")]
-    public class AppRolesController : AuthController
+    [Authorize(Roles = "Admin,Moderator")]
+    public class AppRolesController : Controller
     {
         readonly RoleManager<AppRole> _roleManager;
         readonly UserManager<AppUser> _userManager;
-        public AppRolesController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager) : base(signInManager, userManager, roleManager)
+        public AppRolesController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager) 
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -28,6 +28,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddUserRole()
         {
             AddRoleVM model = new();
@@ -36,6 +37,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddUserRole(AddRoleVM model)
         {
             if (ModelState.IsValid)
@@ -66,6 +68,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateUserRole(int id)
         {
             var values = _roleManager.Roles.FirstOrDefault(x => x.Id == id);
@@ -84,6 +87,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUserRole(AddRoleVM model)
         {
             var values = _roleManager.Roles.Where(x => x.Id == model.Id).FirstOrDefault();
@@ -100,7 +104,7 @@ namespace CrmBox.WebUI.Controllers
             return View();
         }
 
-       
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUserRole(int id)
         {
             var values = _roleManager.Roles.FirstOrDefault(x => x.Id == id);
@@ -113,6 +117,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignUserRole(int id)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == id);
@@ -136,6 +141,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignUserRole(List<AssignRoleVM> model)
         {
             var userId = (int)TempData["UserId"];
