@@ -34,6 +34,9 @@ builder.Host.UseSerilog(((ctx, lc) => lc
 builder.Services.AddDbContext<CrmBoxIdentityContext>();
 builder.Services.AddDbContext<CrmBoxContext>();
 
+//Add Cache
+builder.Services.AddMemoryCache();
+
 builder.Services.AddDbContext<CrmBoxLogContext>();
 
 //Add Localization

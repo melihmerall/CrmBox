@@ -120,10 +120,13 @@
   <data name="Geri Dön" xml:space="preserve">
     <value>Geri Dön</value>
   </data>
-  <data name="Numara" xml:space="preserve">
-    <value>Numara</value>
+  <data name="Rol" xml:space="preserve">
+    <value>Rol</value>
   </data>
-  <data name="Numara Güncelle" xml:space="preserve">
-    <value>Numara Güncelle</value>
+  <data name="Rol Adı" xml:space="preserve">
+    <value>Rol Adı</value>
+  </data>
+  <data name="Rol Güncelle" xml:space="preserve">
+    <value>Rol Güncelle</value>
   </data>
 </root>

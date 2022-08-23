@@ -120,4 +120,7 @@
   <data name="Ana Sayfa" xml:space="preserve">
     <value>Homepage</value>
   </data>
+  <data name="Çıkış" xml:space="preserve">
+    <value>Exit</value>
+  </data>
 </root>

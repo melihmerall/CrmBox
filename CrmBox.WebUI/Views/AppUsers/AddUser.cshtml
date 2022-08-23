@@ -1,11 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model AddUserVM
 @inject IViewLocalizer localizer
 <form method="post" asp-action="AddUser" asp-controller="AppUsers">
 
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title">@localizer["Rol Ekle"]</h3>
+            <h3 class="card-title">@localizer["Kullanıcı Ekle"]</h3>
         </div>
 
         <div class="card-body" style="display: block;">
@@ -28,8 +29,8 @@
 
         <div class="card-footer">
 
-            <a asp-action="AddUsers" asp-controller="AppUsers" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
-            <input type="submit" value="@localizer["Rol Ekle"]" class="btn btn-success col-2 float-right">
+            <a asp-action="GetAllUsers" asp-controller="AppUsers" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
+            <input type="submit" value="@localizer["Kullanıcı Ekle"]" class="btn btn-success col-2 float-right">
         </div>
     </div>
 </form>

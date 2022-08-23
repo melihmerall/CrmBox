@@ -4,26 +4,42 @@ using CrmBox.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace CrmBox.WebUI.Controllers
 {
-    
+
     [Authorize(Roles = "Admin,Moderator")]
     public class AppRolesController : Controller
     {
         readonly RoleManager<AppRole> _roleManager;
         readonly UserManager<AppUser> _userManager;
-        public AppRolesController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager) 
+        IMemoryCache _memoryCache;
+        const string cacheKey = "customerKey";
+        public AppRolesController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IMemoryCache memoryCache)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _memoryCache = memoryCache;
         }
 
         [HttpGet]
         public IActionResult GetAllUserRoles()
         {
-            var roles = _roleManager.Roles.ToList();
+            var roles =  _roleManager.Roles.ToList();
+            if (!_memoryCache.TryGetValue(cacheKey, out object list))
+            {
+     
+                var cacheExpOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(1),
+                    Priority = CacheItemPriority.Normal
+                };
+        
+                _memoryCache.Set(cacheKey, roles, cacheExpOptions);
+            }
             return View(roles);
         }
 
@@ -158,7 +174,7 @@ namespace CrmBox.WebUI.Controllers
                     await _userManager.RemoveFromRoleAsync(user, item.Name);
                 }
             }
-            return RedirectToAction("GetAllUsers","AppUsers");
+            return RedirectToAction("GetAllUsers", "AppUsers");
         }
 
     }

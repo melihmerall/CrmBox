@@ -5,18 +5,21 @@ using CrmBox.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CrmBox.WebUI.Controllers
 {
     [Authorize(Roles = "Admin,Moderator")]
-    
+
     public class CustomersController : Controller
     {
         readonly ICustomerService _customerService;
-
-        public CustomersController(ICustomerService customerService)
+        IMemoryCache _memoryCache;
+        const string cacheKey = "customerKey";
+        public CustomersController(ICustomerService customerService, IMemoryCache memoryCache)
         {
             _customerService = customerService;
+            _memoryCache = memoryCache;
         }
 
         [HttpGet]
@@ -24,18 +27,30 @@ namespace CrmBox.WebUI.Controllers
         public IActionResult GetAllCustomers()
         {
             IQueryable<Customer> result = _customerService.GetAll();
+            if (!_memoryCache.TryGetValue(cacheKey, out object list))
+            {
+
+                var cacheExpOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(1),
+                    Priority = CacheItemPriority.Normal
+                };
+
+                _memoryCache.Set(cacheKey, result, cacheExpOptions);
+            }
+
             return View(result);
         }
 
         [HttpGet]
-       
+
         public IActionResult AddCustomer()
         {
             return View();
         }
 
         [HttpPost]
-    
+
         public async Task<IActionResult> AddCustomer(AddCustomerVM model)
         {
             if (ModelState.IsValid)
@@ -54,12 +69,12 @@ namespace CrmBox.WebUI.Controllers
                 return RedirectToAction("GetAllCustomers");
 
             }
-    
+
             throw new Exception("Ekleme işlemi esnasında bir hata meydana geldi");
         }
 
         [HttpGet]
-   
+
         public IActionResult UpdateCustomer(int id)
         {
             Customer? customer = _customerService.Get(x => x.Id == id);
@@ -70,7 +85,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
-       
+
         public IActionResult UpdateCustomer(Customer model)
         {
             if (ModelState.IsValid)
@@ -82,7 +97,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-  
+
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             await _customerService.DeleteAsync(id);

@@ -4,31 +4,47 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Memory;
+using System.Data;
 
 namespace CrmBox.WebUI.Controllers
 {
     [Authorize(Roles = "Admin,Moderator")]
     public class AppUsersController : Controller
     {
-        
+
         readonly UserManager<AppUser> _userManager;
         readonly RoleManager<AppRole> _roleManager;
         readonly SignInManager<AppUser> _signInManager;
-        public AppUsersController(SignInManager<AppUser> signInManager,UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
-             
+        IMemoryCache _memoryCache;
+        const string cacheKey = "customerKey";
+        public AppUsersController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IMemoryCache memoryCache)
+
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _memoryCache = memoryCache;
         }
 
         [HttpGet]
 
-
         public IActionResult GetAllUsers()
         {
-
             var users = _userManager.Users.ToList();
+
+            if (!_memoryCache.TryGetValue(cacheKey, out object list))
+            {
+                
+                var cacheExpOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(1),
+                    Priority = CacheItemPriority.Normal
+                };
+                
+                _memoryCache.Set(cacheKey, users, cacheExpOptions);
+            }
+
             //var userRole = _roleManager.Roles.Select(x => x.Name).FirstOrDefault();
             //ViewBag.userRole = userRole;
             return View(users);
@@ -92,9 +108,9 @@ namespace CrmBox.WebUI.Controllers
                 FirstName = values.FirstName,
                 LastName = values.LastName,
                 UserName = values.UserName,
-                Password = values.PasswordHash,   
-                
-                
+                Password = values.PasswordHash,
+
+
             };
 
             return View(model);
@@ -110,7 +126,7 @@ namespace CrmBox.WebUI.Controllers
             values.FirstName = model.FirstName;
             values.LastName = model.LastName;
             values.PasswordHash = model.Password;
-            
+
             var result = await _userManager.UpdateAsync(values);
 
             if (result.Succeeded)
@@ -123,7 +139,7 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int Id)
         {
-            var user = _userManager.Users.FirstOrDefault(x=>x.Id==Id);
+            var user = _userManager.Users.FirstOrDefault(x => x.Id == Id);
             await _userManager.DeleteAsync(user);
             return RedirectToAction("GetAllUsers");
         }
