@@ -1,4 +1,5 @@
-﻿using CrmBox.Core.Domain.Identity;
+﻿using CrmBox.Core.Domain;
+using CrmBox.Core.Domain.Identity;
 using CrmBox.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -54,18 +55,18 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult AddUser()
         {
-            AddUserVM appUser = new();
+            //AddUserVM appUser = new();
 
-            var Roles = _roleManager.Roles.Select(x => new RoleWithSelectVM
-            {
-                Id = x.Id,
-                Name = x.Name,
-                IsSelected = false,
-                Claims = _roleManager.GetClaimsAsync(x).Result
-            }).ToList();
+            //var Roles = _roleManager.Roles.Select(x => new RoleWithSelectVM
+            //{
+            //    Id = x.Id,
+            //    Name = x.Name,
+            //    IsSelected = false,
+            //    Claims = _roleManager.GetClaimsAsync(x).Result
+            //}).ToList();
 
-            appUser.Roles = Roles;
-            return View(appUser);
+            //appUser.Roles = Roles;
+            return View();
         }
 
         [HttpPost]
@@ -74,27 +75,26 @@ namespace CrmBox.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser appUser = new()
+                AppUser appUser = new AppUser
                 {
-                    UserName = model.UserName,
+
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-
+                    UserName = model.UserName,
+                  
+                    
                 };
-
-                IdentityResult result = await _userManager.CreateAsync(appUser, model.Password);
-
+               
+               IdentityResult result = await _userManager.CreateAsync(appUser, model.Password);
                 if (result.Succeeded)
                 {
 
-                    //foreach (var role in model.Roles.Where(x => x.IsSelected = true))
-                    //{
-                    //    await _userManager.AddToRoleAsync(appUser, role.Name);
-                    //}
-                    return RedirectToAction("GetAllUsers", "AppUsers");
+                    return RedirectToAction("GetAllUsers");
                 }
+        
+
             }
-            return View(model);
+            return View();
         }
 
         [HttpGet]
@@ -125,7 +125,7 @@ namespace CrmBox.WebUI.Controllers
             values.UserName = model.UserName;
             values.FirstName = model.FirstName;
             values.LastName = model.LastName;
-            values.PasswordHash = model.Password;
+            
 
             var result = await _userManager.UpdateAsync(values);
 

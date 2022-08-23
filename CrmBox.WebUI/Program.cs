@@ -1,20 +1,27 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
+using CrmBox.Application.Services.Customer;
+using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
 using CrmBox.Infrastructure.Extensions.ExceptionHandler;
 using CrmBox.Infrastructure.Registrations;
 using CrmBox.Persistance.Context;
+using CrmBox.WebUI.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System.Globalization;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 //Add Autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>(builder =>
@@ -23,6 +30,11 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     });
 
 builder.Services.AddClaimAuthorizationPolicies();
+
+
+builder.Services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CustomerValidation>()
+).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter=true);
+
 
 //Add Serilog
 Log.Logger = new LoggerConfiguration().CreateLogger();
@@ -33,6 +45,9 @@ builder.Host.UseSerilog(((ctx, lc) => lc
 //Add DbContext
 builder.Services.AddDbContext<CrmBoxIdentityContext>();
 builder.Services.AddDbContext<CrmBoxContext>();
+
+
+
 
 //Add Cache
 builder.Services.AddMemoryCache();

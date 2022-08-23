@@ -58,27 +58,20 @@ namespace CrmBox.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppRole role = new AppRole
+                AppRole appRole = new AppRole
                 {
-                    Name = model.Name
+
+                    Name = model.Name,  
+
                 };
-
-                var result = await _roleManager.CreateAsync(role);
-
+                var result = await _roleManager.CreateAsync(appRole);
                 if (result.Succeeded)
                 {
 
-                    //Policyleri pasif hale getirdim.
-                    //foreach (var policy in model.Policies.Where(x => x.IsSelected))
-                    //{
-                    //    await _roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, policy.Policy));
-                    //}
                     return RedirectToAction("GetAllUserRoles");
                 }
-                foreach (var item in result.Errors)
-                {
-                    ModelState.AddModelError("", item.Description);
-                }
+
+
             }
             return View();
         }
@@ -107,16 +100,19 @@ namespace CrmBox.WebUI.Controllers
         public async Task<IActionResult> UpdateUserRole(AddRoleVM model)
         {
             var values = _roleManager.Roles.Where(x => x.Id == model.Id).FirstOrDefault();
-
             values.Name = model.Name;
-            values.Equals(model.Policies);
-
-            var result = await _roleManager.UpdateAsync(values);
-
-            if (result.Succeeded)
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("GetAllUserRoles");
+                var result = await _roleManager.UpdateAsync(values);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("GetAllUserRoles");
+                }
             }
+
+            
+
+           
             return View();
         }
 

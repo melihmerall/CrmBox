@@ -1,7 +1,9 @@
 ﻿using CrmBox.Application.Interfaces.Customer;
+using CrmBox.Application.Services.Customer;
 using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
 using CrmBox.WebUI.Models;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -55,7 +57,7 @@ namespace CrmBox.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _customerService.AddAsync(new()
+                Customer customer = new Customer
                 {
                     Address = model.Address,
                     CompanyName = model.CompanyName,
@@ -65,19 +67,22 @@ namespace CrmBox.WebUI.Controllers
                     JobTitle = model.JobTitle,
                     LastName = model.LastName,
                     PhoneNumber = model.PhoneNumber,
-                });
+                };
+
+                await _customerService.AddAsync(customer);
+
+
                 return RedirectToAction("GetAllCustomers");
 
             }
-
-            throw new Exception("Ekleme işlemi esnasında bir hata meydana geldi");
+            return View();
         }
 
         [HttpGet]
 
         public IActionResult UpdateCustomer(int id)
         {
-            Customer? customer = _customerService.Get(x => x.Id == id);
+            Customer customer = _customerService.GetById(id);
             if (customer != null)
                 return View(customer);
             else
@@ -86,8 +91,10 @@ namespace CrmBox.WebUI.Controllers
 
         [HttpPost]
 
-        public IActionResult UpdateCustomer(Customer model)
+        public async Task<IActionResult> UpdateCustomer(Customer model)
         {
+
+
             if (ModelState.IsValid)
             {
                 _customerService.Update(model);
@@ -97,7 +104,6 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             await _customerService.DeleteAsync(id);

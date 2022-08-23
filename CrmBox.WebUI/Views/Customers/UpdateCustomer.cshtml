@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model CrmBox.Core.Domain.Customer
 @inject IViewLocalizer localizer
-<form method="post" asp-action="Update" asp-controller="Customers">
+<form method="post" asp-action="UpdateCustomer" asp-controller="Customers">
     @Html.HiddenFor(x => x.Id)
     @Html.HiddenFor(x => x.CreatedTime)
     <div class="card card-primary m-3">
@@ -15,14 +15,37 @@
                 <div class="form-group">
                     <label asp-for="FirstName">@localizer["Adı"]</label>
                     <input type="text" asp-for="FirstName" class="form-control" placeholder="@Model.FirstName">
+                    <span asp-validation-for="FirstName"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="LastName">@localizer["Soyadı"]</label>
                     <input type="text" asp-for="LastName" class="form-control" placeholder="@Model.LastName">
+                    <span asp-validation-for="LastName"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address">@localizer["Adres"]</label>
+                    <input type="text" asp-for="Address" class="form-control" placeholder="@Model.Address">
+                    <span asp-validation-for="Address"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email">@localizer["E-Mail"]</label>
+                    <input type="text" asp-for="Email" class="form-control" placeholder="@Model.Email">
+                    <span asp-validation-for="Email"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyName">@localizer["Şirket"]</label>
+                    <input type="text" asp-for="CompanyName" class="form-control" placeholder="@Model.CompanyName">
+                    <span asp-validation-for="CompanyName"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="JobTitle">@localizer["Unvan"]</label>
+                    <input type="text" asp-for="JobTitle" class="form-control" placeholder="@Model.JobTitle">
+                    <span asp-validation-for="JobTitle"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="PhoneNumber">@localizer["Numara"]</label>
                     <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="@Model.PhoneNumber">
+                    <span asp-validation-for="PhoneNumber"></span>
                 </div>
             </div>
             <div class="card-footer">

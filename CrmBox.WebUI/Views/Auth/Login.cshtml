@@ -6,65 +6,74 @@
     Layout = "AuthLayout";
 }
 <body class="hold-transition login-page">
-<h4>Root User Name : <strong>root</strong></h4>
-<h4>Root Password : <strong>pswrd</strong></h4>
-<div class="login-box">
+    <h4>Root User Name : <strong>root</strong></h4>
+    <h4>Root Password : <strong>pswrd</strong></h4>
+    <li class="nav-item d-none d-sm-inline-block m-2">
+        <partial name="_Culture" />
+    </li>
+    <div class="login-box">
 
-  <!-- /.login-logo -->
-      <div class="card card-outline card-primary">
-        <div class="card-header text-center">
-            <a asp-action="Login" asp-controller="Auth" class="h1"><b>@localizer["Giriş Yap"]</b></a>
-        </div>
-    <div class="card-body">
-      <p class="login-box-msg">@localizer["İşlem yapmak için oturum açınız"]</p>
-
-      <form asp-action="Login" asp-controller="Auth" method="post">
-          <div class="input-group mb-3">
-           
-              <input type="text" asp-for="Username" class="form-control" placeholder="@localizer["Kullanıcı Adı"]">
-              <div class="input-group-append">
-                  <div class="input-group-text">
-                      <span class="fas fa-user"></span>
-                  </div>
-              </div>
-          </div>
-        <div class="input-group mb-3">
-          <input type="password" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+        <!-- /.login-logo -->
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <a asp-action="Login" asp-controller="Auth" class="h1"><b>@localizer["Giriş Yap"]</b></a>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember">
-              <label for="remember">
-                @localizer["Beni hatırla"]
-              </label>
+            <div class="card-body">
+                <p class="login-box-msg">@localizer["İşlem yapmak için oturum açınız"]</p>
+
+                <form asp-action="Login" asp-controller="Auth" method="post">
+                    <div class="input-group mb-3">
+
+                        <input type="text" asp-for="Username" class="form-control" placeholder="@localizer["Kullanıcı Adı"]">
+                        <br />
+                        
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Username"></span>
+                    <div class="input-group mb-3">
+                        <input type="password" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
+                        <br />
+                       
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Password"></span>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="icheck-primary">
+                                <input type="checkbox" id="remember">
+                                <label for="remember">
+                                    @localizer["Beni Hatırla"]
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-4">
+                            <input type="submit" value="@localizer["Giriş Yap"]" class="btn btn-primary btn-block">
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+
+
+                <p class="mb-1">
+                    <a href="forgot-password.html">@localizer["Şifremi Unuttum"]</a>
+                </p>
+                <p class="mb-0">
+                    <a href="register.html" class="text-center">@localizer["Kayıt Ol"]</a>
+                </p>
             </div>
-          </div>
-          <!-- /.col -->
-          <div class="col-4">
-              <input type="submit" value="@localizer["Giriş Yap"]"  class="btn btn-primary btn-block">
-          </div>
-          <!-- /.col -->
+            <!-- /.card-body -->
         </div>
-      </form>
-
-
-      <p class="mb-1">
-        <a href="forgot-password.html">@localizer["Şifremi unuttum"]</a>
-      </p>
-      <p class="mb-0">
-        <a href="register.html" class="text-center">@localizer["Kayıt Ol"]</a>
-      </p>
+        <!-- /.card -->
     </div>
-    <!-- /.card-body -->
-  </div>
-  <!-- /.card -->
-</div>
-<!-- /.login-box -->
+    <!-- /.login-box -->
 
 </body>

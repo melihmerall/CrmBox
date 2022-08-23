@@ -13,15 +13,19 @@
 
             <div class="form-group">
                 <input type="text" asp-for="FirstName" class="form-control" placeholder="@localizer["Adı"]">
+                <span asp-validation-for="FirstName"></span>
             </div>
             <div class="form-group">
                 <input type="text" asp-for="LastName" class="form-control" placeholder="@localizer["Soyadı"]">
+                <span asp-validation-for="LastName"></span>
             </div>
             <div class="form-group">
                 <input type="text" asp-for="UserName" class="form-control" placeholder="@localizer["Kullanıcı Adı"]">
+                <span asp-validation-for="UserName"></span>
             </div>
             <div class="form-group">
                 <input type="text" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
+                <span asp-validation-for="Password"></span>
             </div>
 
         </div>
