@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace CrmBox.WebUI.Controllers
 {
-
+ 
     [Authorize(Roles = "Admin,Moderator")]
     public class AppRolesController : Controller
     {

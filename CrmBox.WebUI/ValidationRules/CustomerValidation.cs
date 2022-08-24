@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CrmBox.Application.Services.Customer
 {
-    public class CustomerValidation: AbstractValidator<AddCustomerVM>
+    public class CustomerValidation: AbstractValidator<Core.Domain.Customer>
     {
         public CustomerValidation()
         {

@@ -8,13 +8,16 @@ using CrmBox.Infrastructure.Extensions.ExceptionHandler;
 using CrmBox.Infrastructure.Registrations;
 using CrmBox.Persistance.Context;
 using CrmBox.WebUI.Models;
+using crypto;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using Serilog;
+using System.Data;
 using System.Globalization;
 using System.Reflection;
 
@@ -30,6 +33,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     });
 
 builder.Services.AddClaimAuthorizationPolicies();
+
 
 
 builder.Services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CustomerValidation>()
@@ -73,7 +77,10 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
     opt.SupportedUICultures = supportedCultures;
 });
 
+         
 
+
+            
 //Add Identity
 builder.Services.AddIdentity<AppUser, AppRole>(x =>
     {
@@ -83,7 +90,9 @@ builder.Services.AddIdentity<AppUser, AppRole>(x =>
         x.Password.RequireLowercase = false;
         x.Password.RequiredLength = 4;
     })
-    .AddEntityFrameworkStores<CrmBoxIdentityContext>();
+    .AddEntityFrameworkStores<CrmBoxIdentityContext>()
+       //token providers
+            .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -98,6 +107,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandlerMiddleware();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    
 }
 
 app.UseHttpsRedirection();

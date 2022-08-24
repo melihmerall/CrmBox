@@ -36,13 +36,13 @@ namespace CrmBox.WebUI.Controllers
 
             if (!_memoryCache.TryGetValue(cacheKey, out object list))
             {
-                
+
                 var cacheExpOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(1),
                     Priority = CacheItemPriority.Normal
                 };
-                
+
                 _memoryCache.Set(cacheKey, users, cacheExpOptions);
             }
 
@@ -81,17 +81,18 @@ namespace CrmBox.WebUI.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     UserName = model.UserName,
-                  
-                    
+                    Email = model.Email,                    
+
+
                 };
-               
-               IdentityResult result = await _userManager.CreateAsync(appUser, model.Password);
+
+                IdentityResult result = await _userManager.CreateAsync(appUser, model.Password);
                 if (result.Succeeded)
                 {
 
                     return RedirectToAction("GetAllUsers");
                 }
-        
+
 
             }
             return View();
@@ -102,14 +103,14 @@ namespace CrmBox.WebUI.Controllers
         public IActionResult UpdateUser(int id)
         {
             var values = _userManager.Users.FirstOrDefault(x => x.Id == id);
-            UpdateUserVM model = new UpdateUserVM
+            AddUserVM model = new AddUserVM
             {
                 Id = values.Id,
                 FirstName = values.FirstName,
                 LastName = values.LastName,
                 UserName = values.UserName,
-                Password = values.PasswordHash,
-
+                Email = values.Email,
+              
 
             };
 
@@ -118,20 +119,24 @@ namespace CrmBox.WebUI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateUser(UpdateUserVM model)
+        public async Task<IActionResult> UpdateUser(AddUserVM model)
         {
-
-            var values = _userManager.Users.Where(x => x.Id == model.Id).FirstOrDefault();
-            values.UserName = model.UserName;
-            values.FirstName = model.FirstName;
-            values.LastName = model.LastName;
-            
-
-            var result = await _userManager.UpdateAsync(values);
-
-            if (result.Succeeded)
+            var values = _userManager.Users.FirstOrDefault(x => x.Id == model.Id);
             {
-                return RedirectToAction("GetAllUsers");
+                values.FirstName = model.FirstName;
+                values.LastName = model.LastName;
+                values.UserName = model.UserName;
+            };
+            if (ModelState.IsValid)
+            {
+              
+                IdentityResult result = await _userManager.UpdateAsync(values);
+                if (result.Succeeded)
+                {
+
+                    return RedirectToAction("GetAllUsers");
+                }
+               
             }
             return View();
         }

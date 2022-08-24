@@ -53,7 +53,7 @@ namespace CrmBox.WebUI.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> AddCustomer(AddCustomerVM model)
+        public async Task<IActionResult> AddCustomer(Core.Domain.Customer model)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace CrmBox.WebUI.Controllers
 
         [HttpGet]
 
-        public IActionResult UpdateCustomer(int id)
+        public async Task<IActionResult> UpdateCustomer(int id)
         {
             Customer customer = _customerService.GetById(id);
             if (customer != null)
@@ -90,17 +90,28 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> UpdateCustomer(Customer model)
         {
 
 
+
             if (ModelState.IsValid)
             {
+                
                 _customerService.Update(model);
+
                 return RedirectToAction("GetAllCustomers");
+
             }
-            throw new Exception("Güncelleme işlemi esnasında bir hata meydana geldi");
+            return View();
+
+            //if (ModelState.IsValid)
+            //{
+
+            //    _customerService.Update(model);
+            //    return RedirectToAction("GetAllCustomers");
+            //}
+            //throw new Exception("Güncelleme işlemi esnasında bir hata meydana geldi");
         }
 
         [HttpGet]

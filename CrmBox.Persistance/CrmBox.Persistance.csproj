@@ -24,4 +24,8 @@
     <ProjectReference Include="..\CrmBox.Core\CrmBox.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\CrmBoxIdentity\" />
+  </ItemGroup>
+
 </Project>
