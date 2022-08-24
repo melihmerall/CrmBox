@@ -126,6 +126,9 @@
   <data name="Kullanıcı Adı" xml:space="preserve">
     <value>User Name</value>
   </data>
+  <data name="Kullanıcı Adı Boş Olamaz" xml:space="preserve">
+    <value>Username Cannot Not Blank</value>
+  </data>
   <data name="Kullanıcı Ekle" xml:space="preserve">
     <value>Add User</value>
   </data>

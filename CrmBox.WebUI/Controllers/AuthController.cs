@@ -98,9 +98,9 @@ namespace CrmBox.WebUI.Controllers
                     ViewBag.State = true;
                 }
                 else { ViewBag.State = false; }
-                
+
             }
-        
+
 
 
             //AppUser user = await _userManager.FindByEmailAsync(model.Email);
@@ -138,15 +138,19 @@ namespace CrmBox.WebUI.Controllers
         [HttpPost("[action]/{userId}/{token}")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordVM model, string userId, string token)
         {
-            AppUser user = await _userManager.FindByIdAsync(userId);
-            IdentityResult result = await _userManager.ResetPasswordAsync(user, HttpUtility.UrlDecode(token), model.Password);
-            if (result.Succeeded)
+            if (ModelState.IsValid)
             {
-                ViewBag.State = true;
-                await _userManager.UpdateSecurityStampAsync(user);
+                AppUser user = await _userManager.FindByIdAsync(userId);
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, HttpUtility.UrlDecode(token), model.Password);
+                if (result.Succeeded)
+                {
+                    ViewBag.State = true;
+                    await _userManager.UpdateSecurityStampAsync(user);
+                }
+                else
+                    ViewBag.State = false;
+
             }
-            else
-                ViewBag.State = false;
             return View();
         }
 

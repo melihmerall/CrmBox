@@ -110,7 +110,6 @@ namespace CrmBox.WebUI.Controllers
                 LastName = values.LastName,
                 UserName = values.UserName,
                 Email = values.Email,
-              
 
             };
 
@@ -126,6 +125,8 @@ namespace CrmBox.WebUI.Controllers
                 values.FirstName = model.FirstName;
                 values.LastName = model.LastName;
                 values.UserName = model.UserName;
+                values.Email = model.Email;
+          
             };
             if (ModelState.IsValid)
             {

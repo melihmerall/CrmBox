@@ -14,37 +14,37 @@
             <div class="card-body" style="display: block;">
                 <div class="form-group">
                     <label asp-for="FirstName">@localizer["Adı"]</label>
-                    <input type="text" asp-for="FirstName" class="form-control" placeholder="@Model.FirstName">
+                    <input asp-for="FirstName" placeholder="@localizer["Adı"]" type="text" class="form-control" />
                     <span asp-validation-for="FirstName"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="LastName">@localizer["Soyadı"]</label>
-                    <input type="text" asp-for="LastName" class="form-control" placeholder="@Model.LastName">
+                    <label asp-for="FirstName">@localizer["Soyadı"]</label>
+                    <input asp-for="LastName" placeholder="@localizer["Soyadı"]" type="text" class="form-control" />
                     <span asp-validation-for="LastName"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Address">@localizer["Adres"]</label>
-                    <input type="text" asp-for="Address" class="form-control" placeholder="@Model.Address">
-                    <span asp-validation-for="Address"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Email">@localizer["E-Mail"]</label>
-                    <input type="email" asp-for="Email" class="form-control" placeholder="@Model.Email">
+                    <label asp-for="FirstName">@localizer["E-Posta"]</label>
+                    <input asp-for="Email" placeholder="@localizer["E-Posta"]" type="email" class="form-control" />
                     <span asp-validation-for="Email"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="CompanyName">@localizer["Şirket"]</label>
-                    <input type="text" asp-for="CompanyName" class="form-control" placeholder="@Model.CompanyName">
+                    <label asp-for="FirstName">@localizer["Adres"]</label>
+                    <input asp-for="Address" placeholder="@localizer["Adres"]" type="text" class="form-control" />
+                    <span asp-validation-for="Address"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstName">@localizer["Şirket"]</label>
+                    <input asp-for="CompanyName" placeholder="@localizer["Şirket"]" type="text" class="form-control" />
                     <span asp-validation-for="CompanyName"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="JobTitle">@localizer["Unvan"]</label>
-                    <input type="text" asp-for="JobTitle" class="form-control" placeholder="@Model.JobTitle">
+                    <label asp-for="FirstName">@localizer["Unvan"]</label>
+                    <input asp-for="JobTitle" placeholder="@localizer["Unvan"]" type="text" class="form-control" />
                     <span asp-validation-for="JobTitle"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="PhoneNumber">@localizer["Numara"]</label>
-                    <input type="text" asp-for="PhoneNumber" class="form-control" placeholder="@Model.PhoneNumber">
+                    <label asp-for="FirstName">@localizer["Telefon Numarası"]</label>
+                    <input asp-for="PhoneNumber" placeholder="@localizer["Telefon Numarası"]" type="text" class="form-control" />
                     <span asp-validation-for="PhoneNumber"></span>
                 </div>
             </div>

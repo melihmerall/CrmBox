@@ -12,18 +12,10 @@
 
             <div class="form-group">
                 <label asp-for="Name">@localizer["Rol Adı"]</label>
-                <input type="text" asp-for="Name" class="form-control" placeholder="@Model.Name">
+                <input type="text" asp-for="Name" class="form-control" placeholder=@localizer["Rol Adı"]>
                 <span asp-validation-for="Name"></span>
             </div>
-@*            <div class="form-group">
-                <label>@localizer["İzinler"]</label>
-                <select asp-for="Policies" class="form-control">
-                    @foreach (var policy in Model.Policies)
-                    {
-                    <option onselect="@policy.IsSelected=true">@policy.Policy</option>
-                    }
-                </select>
-            </div>*@
+
 
         <div class="card-footer">
             <a asp-action="GetAllUserRoles" asp-controller="AppRoles" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
