@@ -14,7 +14,35 @@ namespace CrmBox.WebUI.Helper
 {
     public class EmailHelper
     {
-        public bool SendEmail(string userEmail, string confirmationLink)
+        public bool SendEmail(string userEmail,string message)
+        {
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress("melih16-meral@hotmail.com");
+            mailMessage.To.Add(new MailAddress(userEmail));
+
+            mailMessage.Subject = "Confirm your email";
+            mailMessage.IsBodyHtml = true;
+            mailMessage.Body = message;
+
+            SmtpClient client = new SmtpClient();
+            client.Credentials = new System.Net.NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
+            client.Host = "smtp-mail.outlook.com";
+            client.Port = 587;
+
+            try
+            {
+                client.Send(mailMessage);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // log exception
+            }
+            return false;
+        }
+
+
+        public bool SendEmailConfirm(string userEmail, string confirmationLink)
         {
             MailMessage mailMessage = new MailMessage();
             mailMessage.From = new MailAddress("melih16-meral@hotmail.com");
@@ -66,6 +94,7 @@ namespace CrmBox.WebUI.Helper
             }
             catch (Exception ex)
             {
+                
                 // log exception
             }
             return false;
@@ -85,6 +114,8 @@ namespace CrmBox.WebUI.Helper
             client.Credentials = new System.Net.NetworkCredential("melhi16-meral@hotmail.com", "Ed4b122ff.");
             client.Host = "smtp-mail.outlook.com";
             client.Port = 587;
+
+          
 
             try
             {

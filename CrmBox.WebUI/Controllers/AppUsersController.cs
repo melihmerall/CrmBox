@@ -126,11 +126,11 @@ namespace CrmBox.WebUI.Controllers
                 values.LastName = model.LastName;
                 values.UserName = model.UserName;
                 values.Email = model.Email;
+                
           
             };
             if (ModelState.IsValid)
             {
-              
                 IdentityResult result = await _userManager.UpdateAsync(values);
                 if (result.Succeeded)
                 {

@@ -20,6 +20,8 @@ using Serilog;
 using System.Data;
 using System.Globalization;
 using System.Reflection;
+using Microsoft.Extensions.Hosting;
+using CrmBox.WebUI.TwoFactorAuth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +53,7 @@ builder.Services.AddDbContext<CrmBoxIdentityContext>();
 builder.Services.AddDbContext<CrmBoxContext>();
 
 
-
+builder.Services.AddScoped<TwoFactorService>();
 
 //Add Cache
 builder.Services.AddMemoryCache();
@@ -101,6 +103,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 var app = builder.Build();
 
 
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -109,6 +112,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
     
 }
+
 
 app.UseHttpsRedirection();
 
@@ -122,6 +126,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 app.MapRazorPages();
+
+
 
 app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 

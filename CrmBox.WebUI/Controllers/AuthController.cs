@@ -81,7 +81,7 @@ namespace CrmBox.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model) // Maile Mesaj Gönderir.
         {
             if (ModelState.IsValid)
             {
@@ -102,40 +102,14 @@ namespace CrmBox.WebUI.Controllers
             }
 
 
-
-            //AppUser user = await _userManager.FindByEmailAsync(model.Email);
-            //if (user != null)
-            //{
-            //    string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            //    MailMessage mail = new MailMessage();
-            //    mail.IsBodyHtml = true;
-            //    mail.To.Add(user.Email);
-            //    mail.From = new MailAddress("melih16-meral@hotmail.com", "Şifre Güncelleme", System.Text.Encoding.UTF8);
-            //    mail.Subject = "Şifre Güncelleme Talebi - CrmBox";
-            //    mail.Body = $"<a target=\"_blank\" href=\"https://localhost:7001{Url.Action("UpdatePassword", "Auth", new { userId = user.Id, token = HttpUtility.UrlEncode(resetToken) })}\">Yeni şifre talebi için tıklayınız.</a>";
-            //    mail.IsBodyHtml = true;
-            //    SmtpClient smp = new SmtpClient();
-            //    smp.UseDefaultCredentials = false;
-            //    smp.Credentials = new NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
-            //    smp.Port = 587;
-            //    smp.Host = "smtp-mail.outlook.com";
-            //    smp.EnableSsl = true;
-            //    smp.Send(mail);
-
-            //    
-            //}
-            //else
-            //    ViewBag.State = false;
-
             return View();
         }
         [HttpGet("[action]/{userId}/{token}")]
-        public IActionResult UpdatePassword(string userId, string token)
+        public IActionResult UpdatePassword(string userId, string token)//
         {
             return View();
         }
-        [HttpPost("[action]/{userId}/{token}")]
+        [HttpPost("[action]/{userId}/{token}")]// Maile gelen mesajdaki linke tıklandığında çalışacak kod yapısı.
         public async Task<IActionResult> UpdatePassword(UpdatePasswordVM model, string userId, string token)
         {
             if (ModelState.IsValid)
@@ -153,8 +127,6 @@ namespace CrmBox.WebUI.Controllers
             }
             return View();
         }
-
-
 
     }
 }
