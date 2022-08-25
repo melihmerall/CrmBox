@@ -11,11 +11,8 @@ using System.Threading.Tasks;
 namespace CrmBox.Application.Services.Customer
 {
     public class LoginValidation: AbstractValidator<UserForLoginVM>
-    {
-      
-        public LoginValidation()
+    {    public LoginValidation()
         {
-
             RuleFor(x => x.Username).NotNull();
             RuleFor(x => x.Username).MinimumLength(3);
             RuleFor(x => x.Username).MaximumLength(13);

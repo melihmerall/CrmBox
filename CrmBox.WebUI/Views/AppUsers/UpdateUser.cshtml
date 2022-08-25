@@ -5,6 +5,7 @@
 @*TODO: Bu sayfa Update user eklendikten sonra düzenlenecek *@
 <form method="post" asp-action="UpdateUser" asp-controller="AppUsers">
     @Html.HiddenFor(x => x.Id)
+
     <div class="card card-primary m-3" />
     <div class="card card-primary">
         <div class="card-header">
@@ -33,8 +34,8 @@
                 <span asp-validation-for="Email"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password">@localizer["E-Mail"]</label>
-                <input type="password" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
+                <label asp-for="Password">@localizer["Şifre"]</label>
+                <input type="text" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
                 <span asp-validation-for="Password"></span>
             </div>
             

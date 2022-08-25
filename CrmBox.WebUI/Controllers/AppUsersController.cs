@@ -81,7 +81,9 @@ namespace CrmBox.WebUI.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     UserName = model.UserName,
-                    Email = model.Email,                    
+                    Email = model.Email,
+                    Password = model.Password,
+                    
 
 
                 };
@@ -110,6 +112,8 @@ namespace CrmBox.WebUI.Controllers
                 LastName = values.LastName,
                 UserName = values.UserName,
                 Email = values.Email,
+                Password = values.Password,
+        
 
             };
 
@@ -126,7 +130,7 @@ namespace CrmBox.WebUI.Controllers
                 values.LastName = model.LastName;
                 values.UserName = model.UserName;
                 values.Email = model.Email;
-                
+                values.Password = model.Password;
           
             };
             if (ModelState.IsValid)

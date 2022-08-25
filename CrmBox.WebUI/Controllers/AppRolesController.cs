@@ -145,7 +145,7 @@ namespace CrmBox.WebUI.Controllers
                 AssignRoleVM m = new AssignRoleVM();
                 m.RoleId = item.Id;
                 m.Name = item.Name;
-                m.Exist = userRoles.Contains(item.Name); // contains = eğer istenen değeri ieçriyorsa.
+                m.Exist = userRoles.Contains(item.Name); // contains = eğer istenen değeri içeriyorsa.
                 model.Add(m);
             }
 

@@ -21,7 +21,7 @@ using System.Data;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Hosting;
-using CrmBox.WebUI.TwoFactorAuth;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +37,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
 builder.Services.AddClaimAuthorizationPolicies();
 
 
-
+//Fluetn valdation
 builder.Services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CustomerValidation>()
 ).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter=true);
 
@@ -51,14 +51,13 @@ builder.Host.UseSerilog(((ctx, lc) => lc
 //Add DbContext
 builder.Services.AddDbContext<CrmBoxIdentityContext>();
 builder.Services.AddDbContext<CrmBoxContext>();
+builder.Services.AddDbContext<CrmBoxLogContext>();
 
 
-builder.Services.AddScoped<TwoFactorService>();
 
 //Add Cache
 builder.Services.AddMemoryCache();
 
-builder.Services.AddDbContext<CrmBoxLogContext>();
 
 //Add Localization
 builder.Services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
