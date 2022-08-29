@@ -51,10 +51,14 @@ namespace CrmBox.WebUI.Controllers
                 var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
                 if (result.Succeeded)
                 {
+                    HttpContext.Session.SetString("username", vM.Username);
                     return RedirectToAction("GetAllCustomers", "Customers");
                 }
                 else
+                {
                     return View();
+                }
+                  
 
             }
             return View();
@@ -67,7 +71,7 @@ namespace CrmBox.WebUI.Controllers
             return View();
         }
 
-        [HttpPost]
+        
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();

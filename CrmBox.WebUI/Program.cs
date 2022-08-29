@@ -27,6 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 //Add Autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>(builder =>
@@ -39,7 +40,7 @@ builder.Services.AddClaimAuthorizationPolicies();
 
 //Fluetn valdation
 builder.Services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CustomerValidation>()
-).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter=true);
+).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 
 //Add Serilog
@@ -86,24 +87,52 @@ policy.AllowCredentials()
 .AllowAnyHeader()
 .AllowAnyMethod()
 .SetIsOriginAllowed(x => true)));
-            
+
+
+
+
 //Add Identity
-builder.Services.AddIdentity<AppUser, AppRole>(x =>
+builder.Services.AddIdentity<AppUser, AppRole>(options =>
     {
-        x.Password.RequireUppercase = false;
-        x.Password.RequireNonAlphanumeric = false;
-        x.Password.RequireDigit = false;
-        x.Password.RequireLowercase = false;
-        x.Password.RequiredLength = 4;
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequiredLength = 6;
+        options.Password.RequiredUniqueChars = 1;
+
+        // Lockout settings.
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = true;
+
+        // User settings.
+        options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        options.User.RequireUniqueEmail = true;
+
     })
     .AddEntityFrameworkStores<CrmBoxIdentityContext>()
-       //token providers
+            //token providers
             .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.AccessDeniedPath = new PathString("/Auth/AccessDenied");
 });
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Auth/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
+
 var app = builder.Build();
 
 
@@ -114,7 +143,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandlerMiddleware();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    
+
 }
 
 
@@ -122,23 +151,24 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseSerilogRequestLogging();
 app.UseCors();
-app.UseAuthentication();
 app.UseRouting();
-app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<ChatHub>("ChatHub");
-});
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/ChatHub");
+});
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();
+

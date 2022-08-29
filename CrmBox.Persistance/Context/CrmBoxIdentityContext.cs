@@ -24,11 +24,7 @@ public class CrmBoxIdentityContext : IdentityDbContext<AppUser, AppRole, int>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<AppUser>().Ignore(c => c.PhoneNumber)
-            .Ignore(c => c.PhoneNumberConfirmed)
-            .Ignore(c => c.PhoneNumber)
-            .Ignore(c => c.EmailConfirmed)
-            .Ignore(c => c.TwoFactorEnabled);
+
 
        
         
