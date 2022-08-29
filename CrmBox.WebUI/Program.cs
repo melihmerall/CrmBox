@@ -21,7 +21,7 @@ using System.Data;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Hosting;
-
+using CrmBox.WebUI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,9 +78,14 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
     opt.SupportedUICultures = supportedCultures;
 });
 
-         
 
-
+// Add SignalR
+builder.Services.AddSignalR();
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+policy.AllowCredentials()
+.AllowAnyHeader()
+.AllowAnyMethod()
+.SetIsOriginAllowed(x => true)));
             
 //Add Identity
 builder.Services.AddIdentity<AppUser, AppRole>(x =>
@@ -113,21 +118,23 @@ if (!app.Environment.IsDevelopment())
 }
 
 
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseSerilogRequestLogging();
-
-app.UseRouting();
-
+app.UseCors();
 app.UseAuthentication();
-
+app.UseRouting();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("ChatHub");
+});
+
 app.MapRazorPages();
-
-
-
 app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
 app.MapControllerRoute(

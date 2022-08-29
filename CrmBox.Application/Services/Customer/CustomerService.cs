@@ -13,7 +13,7 @@ public class CustomerService : GenericService<Core.Domain.Customer, CrmBoxContex
 
     public Core.Domain.Customer GetById(int id)
     {
-        Core.Domain.Customer? customer = _context.Customers?.SingleOrDefault(x => x.Id == id);
+        Core.Domain.Customer customer = _context.Set<Core.Domain.Customer>().Find(id);
         if (customer != null)
             return customer;
         else

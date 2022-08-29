@@ -1,4 +1,7 @@
-﻿using CrmBox.Core.Domain;
+﻿using CrmBox.Application.Interfaces.Customer;
+using CrmBox.Application.Interfaces.Message;
+using CrmBox.Application.Services.Customer;
+using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
 using CrmBox.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -15,15 +18,14 @@ namespace CrmBox.WebUI.Controllers
     {
 
         readonly UserManager<AppUser> _userManager;
-        readonly RoleManager<AppRole> _roleManager;
         readonly SignInManager<AppUser> _signInManager;
         IMemoryCache _memoryCache;
         const string cacheKey = "customerKey";
-        public AppUsersController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IMemoryCache memoryCache)
+        public AppUsersController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMemoryCache memoryCache)
 
         {
             _userManager = userManager;
-            _roleManager = roleManager;
+
             _signInManager = signInManager;
             _memoryCache = memoryCache;
         }
@@ -83,7 +85,7 @@ namespace CrmBox.WebUI.Controllers
                     UserName = model.UserName,
                     Email = model.Email,
                     Password = model.Password,
-                    
+
 
 
                 };
@@ -113,7 +115,7 @@ namespace CrmBox.WebUI.Controllers
                 UserName = values.UserName,
                 Email = values.Email,
                 Password = values.Password,
-        
+
 
             };
 
@@ -131,7 +133,7 @@ namespace CrmBox.WebUI.Controllers
                 values.UserName = model.UserName;
                 values.Email = model.Email;
                 values.Password = model.Password;
-          
+
             };
             if (ModelState.IsValid)
             {
@@ -141,7 +143,7 @@ namespace CrmBox.WebUI.Controllers
 
                     return RedirectToAction("GetAllUsers");
                 }
-               
+
             }
             return View();
         }
@@ -153,5 +155,9 @@ namespace CrmBox.WebUI.Controllers
             await _userManager.DeleteAsync(user);
             return RedirectToAction("GetAllUsers");
         }
+
+       
+
+
     }
 }

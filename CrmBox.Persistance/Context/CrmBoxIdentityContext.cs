@@ -9,7 +9,7 @@ namespace CrmBox.Persistance.Context;
 public class CrmBoxIdentityContext : IdentityDbContext<AppUser, AppRole, int>
 {
     readonly IConfiguration _configuration;
-
+    public DbSet<Message> Messages { get; set; }
     public CrmBoxIdentityContext(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -29,6 +29,8 @@ public class CrmBoxIdentityContext : IdentityDbContext<AppUser, AppRole, int>
             .Ignore(c => c.PhoneNumber)
             .Ignore(c => c.EmailConfirmed)
             .Ignore(c => c.TwoFactorEnabled);
+
+       
         
     }
    

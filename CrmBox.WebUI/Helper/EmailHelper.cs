@@ -7,9 +7,7 @@ using CrmBox.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
-using System.Net;
-using System.Web;
+
 namespace CrmBox.WebUI.Helper
 {
     public class EmailHelper

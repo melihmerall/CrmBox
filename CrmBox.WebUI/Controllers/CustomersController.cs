@@ -11,8 +11,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles = "Admin,Moderator")]
-
+    [Authorize(Roles = "Admin")]
     public class CustomersController : Controller
     {
         readonly ICustomerService _customerService;
@@ -80,7 +79,7 @@ namespace CrmBox.WebUI.Controllers
 
         [HttpGet]
 
-        public async Task<IActionResult> UpdateCustomer(int id)
+        public IActionResult UpdateCustomer(int id)
         {
             Customer customer = _customerService.GetById(id);
             if (customer != null)
@@ -90,28 +89,25 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateCustomer(Customer model)
+        public IActionResult UpdateCustomer(Customer model)
         {
-
-
-
-            if (ModelState.IsValid)
-            {
-                
-                _customerService.Update(model);
-
-                return RedirectToAction("GetAllCustomers");
-
-            }
-            return View();
-
             //if (ModelState.IsValid)
             //{
 
             //    _customerService.Update(model);
+
             //    return RedirectToAction("GetAllCustomers");
+
             //}
-            //throw new Exception("Güncelleme işlemi esnasında bir hata meydana geldi");
+            //return View();
+
+            if (ModelState.IsValid)
+            {
+
+                _customerService.Update(model);
+                return RedirectToAction("GetAllCustomers");
+            }
+            throw new Exception("Güncelleme işlemi esnasında bir hata meydana geldi");
         }
 
         [HttpGet]

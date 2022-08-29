@@ -12,6 +12,9 @@ namespace CrmBox.Core.Domain.Identity
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Password { get; set; }
+
+        // Bire çok ilişki   AppUser || Mesasge
+        public virtual ICollection<Message> Messages { get; set; }
   
 
 
