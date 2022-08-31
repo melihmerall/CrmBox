@@ -21,12 +21,13 @@ using System.Data;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Hosting;
-
+using CrmBox.WebUI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 //Add Autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>(builder =>
@@ -39,7 +40,7 @@ builder.Services.AddClaimAuthorizationPolicies();
 
 //Fluetn valdation
 builder.Services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CustomerValidation>()
-).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter=true);
+).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 
 //Add Serilog
@@ -78,27 +79,59 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
     opt.SupportedUICultures = supportedCultures;
 });
 
-         
+
+// Add SignalR
+builder.Services.AddSignalR();
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+policy.AllowCredentials()
+.AllowAnyHeader()
+.AllowAnyMethod()
+.SetIsOriginAllowed(x => true)));
 
 
-            
+
+
 //Add Identity
-builder.Services.AddIdentity<AppUser, AppRole>(x =>
+builder.Services.AddIdentity<AppUser, AppRole>(options =>
     {
-        x.Password.RequireUppercase = false;
-        x.Password.RequireNonAlphanumeric = false;
-        x.Password.RequireDigit = false;
-        x.Password.RequireLowercase = false;
-        x.Password.RequiredLength = 4;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequiredUniqueChars = 1;
+
+        // Lockout settings.
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = true;
+
+        // User settings.
+        options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        options.User.RequireUniqueEmail = false;
+
     })
     .AddEntityFrameworkStores<CrmBoxIdentityContext>()
-       //token providers
             .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.AccessDeniedPath = new PathString("/Auth/AccessDenied");
 });
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Auth/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
+
 var app = builder.Build();
 
 
@@ -109,29 +142,30 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandlerMiddleware();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    
+
 }
+
 
 
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseSerilogRequestLogging();
-
+app.UseCors();
 app.UseRouting();
 
+
 app.UseAuthentication();
-
 app.UseAuthorization();
+
 app.MapRazorPages();
-
-
-
 app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
-
+app.MapHub<UserHub>("/hubs/userCount");
+app.MapHub<ChatHub>("/hubs/chat");
 app.Run();
+

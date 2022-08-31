@@ -22,7 +22,7 @@ namespace CrmBox.Persistance.Context
         {
             optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Main"));
         }
-        public DbSet<Customer>? Customers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
     }
     
 }

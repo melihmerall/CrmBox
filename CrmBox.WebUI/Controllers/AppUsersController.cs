@@ -1,4 +1,6 @@
-﻿using CrmBox.Core.Domain;
+﻿using CrmBox.Application.Interfaces.Customer;
+using CrmBox.Application.Services.Customer;
+using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
 using CrmBox.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -10,20 +12,19 @@ using System.Data;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles = "Admin,Moderator")]
+    //[Authorize(Roles = "Admin,Moderator")]
     public class AppUsersController : Controller
     {
 
         readonly UserManager<AppUser> _userManager;
-        readonly RoleManager<AppRole> _roleManager;
         readonly SignInManager<AppUser> _signInManager;
         IMemoryCache _memoryCache;
         const string cacheKey = "customerKey";
-        public AppUsersController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IMemoryCache memoryCache)
+        public AppUsersController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMemoryCache memoryCache)
 
         {
             _userManager = userManager;
-            _roleManager = roleManager;
+
             _signInManager = signInManager;
             _memoryCache = memoryCache;
         }
@@ -52,7 +53,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult AddUser()
         {
             //AddUserVM appUser = new();
@@ -70,7 +71,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddUser(AddUserVM model)
         {
             if (ModelState.IsValid)
@@ -83,7 +84,7 @@ namespace CrmBox.WebUI.Controllers
                     UserName = model.UserName,
                     Email = model.Email,
                     Password = model.Password,
-                    
+
 
 
                 };
@@ -101,7 +102,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult UpdateUser(int id)
         {
             var values = _userManager.Users.FirstOrDefault(x => x.Id == id);
@@ -113,7 +114,7 @@ namespace CrmBox.WebUI.Controllers
                 UserName = values.UserName,
                 Email = values.Email,
                 Password = values.Password,
-        
+
 
             };
 
@@ -121,7 +122,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(AddUserVM model)
         {
             var values = _userManager.Users.FirstOrDefault(x => x.Id == model.Id);
@@ -131,7 +132,7 @@ namespace CrmBox.WebUI.Controllers
                 values.UserName = model.UserName;
                 values.Email = model.Email;
                 values.Password = model.Password;
-          
+
             };
             if (ModelState.IsValid)
             {
@@ -141,17 +142,21 @@ namespace CrmBox.WebUI.Controllers
 
                     return RedirectToAction("GetAllUsers");
                 }
-               
+
             }
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int Id)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == Id);
             await _userManager.DeleteAsync(user);
             return RedirectToAction("GetAllUsers");
         }
+
+       
+
+
     }
 }
