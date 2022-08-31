@@ -3,78 +3,80 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IViewLocalizer localizer
 <input type="hidden" id="hdUserId" value="@Model.UserId" />
-
-<div class="container border m-3 p-4">
-    <div class="row">
-        <div class="col-3">@localizer["Kullanıcı Seç"]</div>
-        <div class="col-4">
-            <select class="form-select" id="ddlSelUser">
-            </select>
-
-        </div>
-
-    </div>
-
-</div>
-<div class="card card-primary card-outline direct-chat direct-chat-primary">
-    <div class="card-header">
-        <h3 class="card-title">@localizer["Direkt Mesaj"]</h3>
-
-        <div class="card-tools">
-            <span title="3 New Messages" class="badge bg-primary">3</span>
-            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" title="Contacts" data-widget="chat-pane-toggle">
-                <i class="fas fa-comments"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
-
-    <div class="card-body">
-
-        <div class="direct-chat-messages">
-            <div class="direct-chat-msg">
-                <div class="direct-chat-infos clearfix">
-                    <span class="direct-chat-name float-left">@Model.UserId</span>
-                    <span class="direct-chat-timestamp float-right">@DateTime.Now</span>
+<div class="row rounded-lg overflow-hidden shadow">
+    <div class="col-4 px-0">
+        <div class="container border m-2 p-4">
+            <div class="row">
+                <div class="col-3">@localizer["Kullanıcı Seç"]</div>
+                <div class="col-4">
+                    <select class="form-select" id="ddlSelUser">
+                    </select>
                 </div>
-                <img class="direct-chat-img" src="../dist/img/user1-128x128.jpg" alt="Message User Image">
-
-                <div id="privateMessage" class="direct-chat-text">
-                    <ui id="privateMessage"></ui>
-
+                <div class="container border m-3 p-4 bg-light">
+                    <div class="row" style="min-height:200px;">
+                        <div class="col-12">
+                            @localizer["Bağlantı Durumu"]
+                            <ui id="messagesList"></ui>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
         </div>
     </div>
-    <div class="card-footer">
+    <div class="col-1">
+    </div>
+    <div class="col-6">
+        <div class="card card-primary card-outline direct-chat direct-chat-primary">
+            <div class="card-header">
+                <h3 class="card-title">@localizer["Direkt Mesaj"]</h3>
+                <div class="card-tools">
+                    <span title="3 New Messages" class="badge bg-primary">3</span>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" title="Contacts" data-widget="chat-pane-toggle">
+                        <i class="fas fa-comments"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="direct-chat-messages">
+                    <div class="direct-chat-msg">
+                        <div class="direct-chat-infos clearfix">
+                            <span class="direct-chat-name float-left">@localizer["Kullanıcı Adı"]: @ViewBag.userName</span>
+                            <span class="direct-chat-timestamp float-right">@DateTime.Now</span>
+                        </div>
+                        <img class="direct-chat-img" src="../dist/img/user1-128x128.jpg" alt="Message User Image">
 
-        <div class="input-group">
-            <input id="txtPrivateMessage" type="text" name="message" placeholder="@localizer["Mesaj Yaz..."]" class="form-control">
-            <span class="input-group-append">
-                <input type="button" class="btn btn-secondary" onclick="sendPrivateMessage()" id="sendButton" value="Send Private Message" />
-            </span>
+                        <div id="privateMessage" class="direct-chat-text">
+                            <ui id="privateMessage"></ui>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+
+                <div class="input-group">
+                    <input id="txtPrivateMessage" type="text" name="message" placeholder="@localizer["Mesaj Yaz..."]" class="form-control">
+                    <span class="input-group-append">
+                        <input type="button" class="btn btn-secondary" onclick="sendPrivateMessage()" id="sendButton" value="Send Private Message" />
+                    </span>
+                </div>
+
+            </div>
         </div>
 
+        <!-- /.card-footer-->
     </div>
-    <!-- /.card-footer-->
 </div>
-<div class="container border m-3 p-4 bg-light">
-
-    <div class="row" style="min-height:200px;">
-        <div class="col-12">
-            @localizer["Mesaj Listesi"]
-            <ui id="messagesList"></ui>
-        </div>
-    </div>
-</div>
 
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script src="https://kit.fontawesome.com/968648577f.js" crossorigin="anonymous"></script>
 <script src="~/js/chat.js"></script>
