@@ -1,5 +1,4 @@
 ﻿using CrmBox.Application.Interfaces.Customer;
-using CrmBox.Application.Interfaces.Message;
 using CrmBox.Application.Services.Customer;
 using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;

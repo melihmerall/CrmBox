@@ -1,73 +1,124 @@
-﻿using CrmBox.Application.Services.Message;
+﻿
 using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
 using CrmBox.Persistance.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace CrmBox.WebUI.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly MessageService _messageService;
-        private readonly CrmBoxIdentityContext _context;
-        public ChatHub(UserManager<AppUser> userManager, CrmBoxIdentityContext context)
+
+        private readonly CrmBoxIdentityContext _db;
+        public ChatHub(CrmBoxIdentityContext db)
         {
-            _userManager = userManager;
-            _context = context;
+            _db = db;
         }
-        public async Task BroadcastFromClient(string message)
+
+        public override Task OnConnectedAsync()
         {
-            try
+            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!String.IsNullOrEmpty(UserId))
             {
-                var currentUser = await _userManager.GetUserAsync(Context.User);
-                Message m = new Message()
-                {
-                    MessageText = message,
-                    MessageTime = DateTime.Now,
-                    FromUser = currentUser
-                };
-                _context.Add(m);
-                await _context.SaveChangesAsync();
-
-                await Clients.All.SendAsync(
-                    "Broadcast",
-                    new
-                    {
-                        messageText = m.MessageText,
-                        fromUser = currentUser.Email,
-                        messageTime = m.MessageTime.ToString(
-                            "hh:mm tt MMM dd", CultureInfo.InvariantCulture)
-                    });
+                var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected", UserId, userName);
+                HubConnections.AddUserConnection(UserId, Context.ConnectionId);
             }
-            catch (Exception ex)
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception? exception)
+        {
+            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
             {
+                var UserConnections = HubConnections.Users[UserId];
+                UserConnections.Remove(Context.ConnectionId);
 
-                await Clients.Caller.SendAsync("HubError", new { error = ex.Message });
+                HubConnections.Users.Remove(UserId);
+                if (UserConnections.Any())
+                    HubConnections.Users.Add(UserId, UserConnections);
             }
-        }
-        public override async Task OnConnectedAsync()
-        {
-            await Clients.All.SendAsync(
-                "UserConnected",
-                new
-                {
-                    connectionId = Context.ConnectionId,
-                    connectionDt = DateTime.Now,
-                    messageDt = DateTime.Now.ToString(
-                            "hh:mm tt MMM dd", CultureInfo.InvariantCulture
-                            )
-                });
 
+            if (!String.IsNullOrEmpty(UserId))
+            {
+                var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
+                HubConnections.AddUserConnection(UserId, Context.ConnectionId);
+            }
+            return base.OnDisconnectedAsync(exception);
         }
-        public override async Task OnDisconnectedAsync(Exception ex)
+
+        public async Task SendAddRoomMessage(int maxRoom, int roomId, string roomName)
         {
-            await Clients.All.SendAsync("UserDisconnected",
-                $"User disconnected, ConnectionId: {Context.ConnectionId}");
-            
+            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+
+            await Clients.All.SendAsync("ReceiveAddRoomMessage", maxRoom, roomId, roomName, UserId, userName);
         }
+
+        public async Task SendDeleteRoomMessage(int deleted, int selected, string roomName)
+        {
+            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+
+            await Clients.All.SendAsync("ReceiveDeleteRoomMessage", deleted, selected, roomName, userName);
+        }
+
+        public async Task SendPublicMessage(int roomId, string message, string roomName)
+        {
+            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+
+            await Clients.All.SendAsync("ReceivePublicMessage", roomId, UserId, userName, message, roomName);
+        }
+
+        public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
+        {
+            var senderId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var senderName = _db.Users.FirstOrDefault(u => u.Id.ToString() == senderId).UserName;
+
+            var users = new string[] { senderId, receiverId };
+
+            await Clients.Users(users).SendAsync("ReceivePrivateMessage", senderId, senderName, receiverId, message, Guid.NewGuid(), receiverName);
+        }
+
+        public async Task SendOpenPrivateChat(string receiverId)
+        {
+            var username = Context.User.FindFirstValue(ClaimTypes.Name);
+            var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            await Clients.User(receiverId).SendAsync("ReceiveOpenPrivateChat", userId, username);
+        }
+
+        public async Task SendDeletePrivateChat(string chartId)
+        {
+            await Clients.All.SendAsync("ReceiveDeletePrivateChat", chartId);
+        }
+
+        //public async Task SendMessageToAll(string user, string message)
+        //{
+        //    await Clients.All.SendAsync("MessageReceived", user, message);
+        //}
+        //[Authorize]
+        //public async Task SendMessageToReceiver(string sender, string receiver, string message)
+        //{
+        //    var userId = _db.Users.FirstOrDefault(u => u.Email.ToLower() == receiver.ToLower()).Id;
+
+        //    if (!string.IsNullOrEmpty(userId))
+        //    {
+        //        await Clients.User(userId).SendAsync("MessageReceived", sender, message);
+        //    }
+
+        //}
 
     }
+
 }
+
+
+

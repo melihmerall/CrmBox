@@ -22,6 +22,23 @@ namespace CrmBox.Persistance.Migrations.CrmBoxIdentity
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("CrmBox.Core.Domain.ChatRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatRoom");
+                });
+
             modelBuilder.Entity("CrmBox.Core.Domain.Identity.AppRole", b =>
                 {
                     b.Property<int>("Id")

@@ -94,10 +94,10 @@ policy.AllowCredentials()
 //Add Identity
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
     {
-        options.Password.RequireDigit = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireNonAlphanumeric = true;
-        options.Password.RequireUppercase = true;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 6;
         options.Password.RequiredUniqueChars = 1;
 
@@ -109,11 +109,10 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
         // User settings.
         options.User.AllowedUserNameCharacters =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-        options.User.RequireUniqueEmail = true;
+        options.User.RequireUniqueEmail = false;
 
     })
     .AddEntityFrameworkStores<CrmBoxIdentityContext>()
-            //token providers
             .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -162,13 +161,11 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<ChatHub>("/ChatHub");
-});
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
-
+app.MapHub<UserHub>("/hubs/userCount");
+app.MapHub<ChatHub>("/hubs/chat");
 app.Run();
 
