@@ -33,10 +33,10 @@ namespace CrmBox.WebUI.Controllers
             var roots = await _userManager.GetUsersInRoleAsync("root");
             if (roots.Count == 0)
             {
-                AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root" };
-                IdentityResult result = await _userManager.CreateAsync(rootUser, "pswrd");
+                AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root" ,Email="root@root.com"};
+                IdentityResult result = await _userManager.CreateAsync(rootUser, "pswrd1");
                 if (result.Succeeded)
-                    await _userManager.AddToRoleAsync(rootUser, "ROOT");
+                    await _userManager.AddToRoleAsync(rootUser, "Admin");
             }
 
             return View();

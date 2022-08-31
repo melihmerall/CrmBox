@@ -53,29 +53,6 @@ namespace CrmBox.WebUI.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendAddRoomMessage(int maxRoom, int roomId, string roomName)
-        {
-            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-
-            await Clients.All.SendAsync("ReceiveAddRoomMessage", maxRoom, roomId, roomName, UserId, userName);
-        }
-
-        public async Task SendDeleteRoomMessage(int deleted, int selected, string roomName)
-        {
-            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-
-            await Clients.All.SendAsync("ReceiveDeleteRoomMessage", deleted, selected, roomName, userName);
-        }
-
-        public async Task SendPublicMessage(int roomId, string message, string roomName)
-        {
-            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-
-            await Clients.All.SendAsync("ReceivePublicMessage", roomId, UserId, userName, message, roomName);
-        }
 
         public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
         {
