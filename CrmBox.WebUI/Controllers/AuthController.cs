@@ -30,13 +30,15 @@ namespace CrmBox.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Login()
         {
-            var roots = await _userManager.GetUsersInRoleAsync("root");
+            var roots = await _userManager.GetUsersInRoleAsync("Admin");
             if (roots.Count == 0)
             {
-                AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root" ,Email="root@root.com"};
+                AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root", Email = "root@root.com", Password = "pswrd1" };
                 IdentityResult result = await _userManager.CreateAsync(rootUser, "pswrd1");
+                AppRole role = new() { Name = "Admin", NormalizedName = "ADMIN" };
                 if (result.Succeeded)
-                    await _userManager.AddToRoleAsync(rootUser, "Admin");
+                    await _roleManager.CreateAsync(role);
+                await _userManager.AddToRoleAsync(rootUser, "Admin");
             }
 
             return View();
@@ -58,7 +60,7 @@ namespace CrmBox.WebUI.Controllers
                 {
                     return View();
                 }
-                  
+
 
             }
             return View();
@@ -71,7 +73,7 @@ namespace CrmBox.WebUI.Controllers
             return View();
         }
 
-        
+
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
