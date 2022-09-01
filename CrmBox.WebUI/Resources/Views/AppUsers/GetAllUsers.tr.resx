@@ -147,4 +147,7 @@
   <data name="Soyadı" xml:space="preserve">
     <value>Soyadı</value>
   </data>
+  <data name="Yetki İşlemleri" xml:space="preserve">
+    <value>Yetki İşlemleri</value>
+  </data>
 </root>

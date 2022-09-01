@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using CrmBox.WebUI.Helper;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace CrmBox.WebUI.Controllers
 {
@@ -28,17 +29,22 @@ namespace CrmBox.WebUI.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(int id)
         {
-            var roots = await _userManager.GetUsersInRoleAsync("Admin");
+
+            var roots = await _userManager.GetUsersInRoleAsync("Root");
             if (roots.Count == 0)
             {
                 AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root", Email = "root@root.com", Password = "pswrd1" };
                 IdentityResult result = await _userManager.CreateAsync(rootUser, "pswrd1");
-                AppRole role = new() { Name = "Admin", NormalizedName = "ADMIN" };
+                AppRole role = new() { Name = "Root", NormalizedName = "ROOT" };
                 if (result.Succeeded)
+                {
+                    
                     await _roleManager.CreateAsync(role);
-                await _userManager.AddToRoleAsync(rootUser, "Admin");
+                    await _userManager.AddToRoleAsync(rootUser, "Root");
+                }
+
             }
 
             return View();
@@ -50,10 +56,15 @@ namespace CrmBox.WebUI.Controllers
 
             if (ModelState.IsValid)
             {
+
                 var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
+
+            
+
                 if (result.Succeeded)
                 {
                     HttpContext.Session.SetString("username", vM.Username);
+                    
                     return RedirectToAction("GetAllCustomers", "Customers");
                 }
                 else

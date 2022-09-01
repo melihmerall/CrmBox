@@ -4,6 +4,7 @@ namespace CrmBox.WebUI.Models
 {
     public class UserForLoginVM
     {
+ 
         [Required(ErrorMessage ="Lütfen Kullanıcı adını giriniz")]
         public string Username { get; set; }
 

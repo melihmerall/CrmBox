@@ -115,6 +115,62 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
     .AddEntityFrameworkStores<CrmBoxIdentityContext>()
             .AddDefaultTokenProviders();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("GetAllUsers",
+        policy => policy.RequireClaim("Get All Users"));
+    options.AddPolicy("ManageUserClaims",
+        policy => policy.RequireClaim("Manage User Claims"));
+
+    options.AddPolicy("AddUser",
+    policy => policy.RequireClaim("Add User"));
+
+    options.AddPolicy("UpdateUser",
+    policy => policy.RequireClaim("Update User"));
+
+    options.AddPolicy("DeleteUser",
+    policy => policy.RequireClaim("Delete User"));
+
+    options.AddPolicy("GetAllUserRoles",
+    policy => policy.RequireClaim("Get All User Roles"));
+
+    options.AddPolicy("AddUserRole",
+    policy => policy.RequireClaim("Add User Role"));
+
+    options.AddPolicy("UpdateUserRole",
+    policy => policy.RequireClaim("Update User Role"));
+
+    options.AddPolicy("DeleteUserRole",
+    policy => policy.RequireClaim("Delete User Role"));
+
+    options.AddPolicy("ChooseUserRole",
+policy => policy.RequireClaim("Choose User Role"));
+
+    options.AddPolicy("ManageUserClaims",
+policy => policy.RequireClaim("Manage User Claims"));
+
+    options.AddPolicy("GetAllCustomers",
+policy => policy.RequireClaim("Get All Customers"));
+
+    options.AddPolicy("AddCustomer",
+policy => policy.RequireClaim("Add Customer"));
+
+
+    options.AddPolicy("UpdateCustomer",
+policy => policy.RequireClaim("Update Customer"));
+
+
+    options.AddPolicy("Delete Customer",
+policy => policy.RequireClaim("Delete Customer"));
+
+    options.AddPolicy("Chat",
+policy => policy.RequireClaim("Chat"));
+
+
+
+
+});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.AccessDeniedPath = new PathString("/Auth/AccessDenied");

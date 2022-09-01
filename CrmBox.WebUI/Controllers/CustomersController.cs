@@ -11,7 +11,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Root,Admin,Moderator")]
     public class CustomersController : Controller
     {
         readonly ICustomerService _customerService;
@@ -24,7 +24,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-
+        [Authorize(Policy = "GetAllCustomers")]
         public IActionResult GetAllCustomers()
         {
             IQueryable<Customer> result = _customerService.GetAll();
@@ -44,14 +44,14 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-
+        [Authorize(Policy = "AddCustomer")]
         public IActionResult AddCustomer()
         {
             return View();
         }
 
         [HttpPost]
-
+        [Authorize(Policy = "AddCustomer")]
         public async Task<IActionResult> AddCustomer(Core.Domain.Customer model)
         {
             if (ModelState.IsValid)
@@ -78,7 +78,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-
+        [Authorize(Policy = "UpdateCustomer")]
         public IActionResult UpdateCustomer(int id)
         {
             Customer customer = _customerService.GetById(id);
@@ -89,17 +89,10 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "UpdateCustomer")]
         public IActionResult UpdateCustomer(Customer model)
         {
-            //if (ModelState.IsValid)
-            //{
-
-            //    _customerService.Update(model);
-
-            //    return RedirectToAction("GetAllCustomers");
-
-            //}
-            //return View();
+            
 
             if (ModelState.IsValid)
             {
@@ -111,6 +104,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "DeleteCustomer")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             await _customerService.DeleteAsync(id);

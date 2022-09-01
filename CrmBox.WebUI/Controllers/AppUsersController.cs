@@ -12,7 +12,7 @@ using System.Data;
 
 namespace CrmBox.WebUI.Controllers
 {
-    //[Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Roles = "Root,Admin,Moderator")]
     public class AppUsersController : Controller
     {
 
@@ -30,7 +30,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-
+        [Authorize(Policy = "GetAllUsers")]
         public IActionResult GetAllUsers()
         {
             var users = _userManager.Users.ToList();
@@ -53,7 +53,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AddUser")]
         public IActionResult AddUser()
         {
             //AddUserVM appUser = new();
@@ -71,7 +71,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AddUser")]
         public async Task<IActionResult> AddUser(AddUserVM model)
         {
             if (ModelState.IsValid)
@@ -102,7 +102,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "UpdateUser")]
         public IActionResult UpdateUser(int id)
         {
             var values = _userManager.Users.FirstOrDefault(x => x.Id == id);
@@ -122,7 +122,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "UpdateUser")]
         public async Task<IActionResult> UpdateUser(AddUserVM model)
         {
             var values = _userManager.Users.FirstOrDefault(x => x.Id == model.Id);
@@ -147,7 +147,7 @@ namespace CrmBox.WebUI.Controllers
             return View();
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "DeleteUser")]
         public async Task<IActionResult> DeleteUser(int Id)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == Id);
