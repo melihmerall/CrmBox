@@ -22,6 +22,7 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Hosting;
 using CrmBox.WebUI.Hubs;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +55,7 @@ builder.Services.AddDbContext<CrmBoxIdentityContext>();
 builder.Services.AddDbContext<CrmBoxContext>();
 builder.Services.AddDbContext<CrmBoxLogContext>();
 
-
+builder.Services.Configure<FormOptions>(x => x.ValueCountLimit = 1000000);
 
 //Add Cache
 builder.Services.AddMemoryCache();
@@ -115,6 +116,7 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
     .AddEntityFrameworkStores<CrmBoxIdentityContext>()
             .AddDefaultTokenProviders();
 
+//Policy Rules
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("GetAllUsers",
@@ -165,11 +167,9 @@ policy => policy.RequireClaim("Delete Customer"));
 
     options.AddPolicy("Chat",
 policy => policy.RequireClaim("Chat"));
-
-
-
-
 });
+//Policy Rules
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -181,7 +181,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     // Cookie settings
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
+   
     options.LoginPath = "/Auth/Login";
     options.AccessDeniedPath = "/Auth/AccessDenied";
     options.SlidingExpiration = true;
@@ -198,6 +198,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandlerMiddleware();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    
 
 }
 

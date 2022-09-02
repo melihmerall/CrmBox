@@ -147,6 +147,9 @@
   <data name="Soyadı" xml:space="preserve">
     <value>Surname</value>
   </data>
+  <data name="Yetki Ver" xml:space="preserve">
+    <value>Give Claim</value>
+  </data>
   <data name="Yetki İşlemleri" xml:space="preserve">
     <value>Authority Operations</value>
   </data>

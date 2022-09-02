@@ -33,7 +33,11 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "GetAllUsers")]
         public IActionResult GetAllUsers()
         {
+
+            
+
             var users = _userManager.Users.ToList();
+            
 
             if (!_memoryCache.TryGetValue(cacheKey, out object list))
             {
@@ -46,9 +50,6 @@ namespace CrmBox.WebUI.Controllers
 
                 _memoryCache.Set(cacheKey, users, cacheExpOptions);
             }
-
-            //var userRole = _roleManager.Roles.Select(x => x.Name).FirstOrDefault();
-            //ViewBag.userRole = userRole;
             return View(users);
         }
 
@@ -56,17 +57,7 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "AddUser")]
         public IActionResult AddUser()
         {
-            //AddUserVM appUser = new();
 
-            //var Roles = _roleManager.Roles.Select(x => new RoleWithSelectVM
-            //{
-            //    Id = x.Id,
-            //    Name = x.Name,
-            //    IsSelected = false,
-            //    Claims = _roleManager.GetClaimsAsync(x).Result
-            //}).ToList();
-
-            //appUser.Roles = Roles;
             return View();
         }
 
@@ -84,9 +75,6 @@ namespace CrmBox.WebUI.Controllers
                     UserName = model.UserName,
                     Email = model.Email,
                     Password = model.Password,
-
-
-
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(appUser, model.Password);
@@ -95,8 +83,6 @@ namespace CrmBox.WebUI.Controllers
 
                     return RedirectToAction("GetAllUsers");
                 }
-
-
             }
             return View();
         }
@@ -114,8 +100,6 @@ namespace CrmBox.WebUI.Controllers
                 UserName = values.UserName,
                 Email = values.Email,
                 Password = values.Password,
-
-
             };
 
             return View(model);
@@ -154,9 +138,5 @@ namespace CrmBox.WebUI.Controllers
             await _userManager.DeleteAsync(user);
             return RedirectToAction("GetAllUsers");
         }
-
-       
-
-
     }
 }

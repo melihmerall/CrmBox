@@ -2,6 +2,7 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "allowDoubleEscaping": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:1386",
       "sslPort": 44300
@@ -20,6 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+     
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

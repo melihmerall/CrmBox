@@ -9,6 +9,8 @@ using System.Web;
 using CrmBox.WebUI.Helper;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace CrmBox.WebUI.Controllers
 {
@@ -29,10 +31,11 @@ namespace CrmBox.WebUI.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Login(int id)
+        public async Task<IActionResult> Login()
         {
 
             var roots = await _userManager.GetUsersInRoleAsync("Root");
+
             if (roots.Count == 0)
             {
                 AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root", Email = "root@root.com", Password = "pswrd1" };
@@ -59,11 +62,15 @@ namespace CrmBox.WebUI.Controllers
 
                 var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
 
-            
-
+                // ekrana rolü çekmek için kullanacağım.
+                //var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == vM.Username);
                 if (result.Succeeded)
                 {
                     HttpContext.Session.SetString("username", vM.Username);
+
+                    
+
+
                     
                     return RedirectToAction("GetAllCustomers", "Customers");
                 }

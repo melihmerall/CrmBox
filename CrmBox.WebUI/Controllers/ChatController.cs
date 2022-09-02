@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin,Moderator,Root")]
     public class ChatController : Controller
     {
         private readonly CrmBoxIdentityContext _context;
@@ -29,6 +29,7 @@ namespace CrmBox.WebUI.Controllers
         {
             return View();
         }
+        [Authorize(Policy ="Chat")]
         public IActionResult Chat()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
