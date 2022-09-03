@@ -156,7 +156,8 @@ namespace CrmBox.WebUI.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> SendSms(SendSmsVM vm)
+        [Authorize(Policy = "SendSmstoCustomer")]
+        public IActionResult SendSms(SendSmsVM vm)
         {
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
             var values = _customerService.GetAll().Where(x => x.Id == vm.Id).FirstOrDefault();
@@ -167,14 +168,21 @@ namespace CrmBox.WebUI.Controllers
             };
             try
             {
-                var message = MessageResource.Create(
-                    body: "Messages" + vm.MessageBody,
-                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
-                    to: new Twilio.Types.PhoneNumber(vm.PhoneNumber));
+                if (ModelState.IsValid)
+                {
+                    var message = MessageResource.Create(
+                   body: "Messages: " + vm.MessageBody,
+                   from: new PhoneNumber(_twilioOptions.PhoneNumber),
+                   to: new PhoneNumber(vm.PhoneNumber));
+
+                    ViewBag.State = true;
+                }
+
             }
             catch (Exception ex)
             {
 
+                ViewBag.State = false;
                 throw;
             }
             return View();

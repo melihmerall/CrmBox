@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using System.Security.Claims;
+using CrmBox.Infrastructure.Extensions.Policies;
 
 namespace CrmBox.WebUI.Controllers
 {
@@ -38,6 +40,8 @@ namespace CrmBox.WebUI.Controllers
 
             var roots = await _userManager.GetUsersInRoleAsync("Root");
 
+            // Claimlerimi liste halinde tuttum. aşağıda ekleme yaptırmak için.
+            var claims = ClaimStore.AllClaims.ToList();
             if (roots.Count == 0)
             {
                 AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root", Email = "root@root.com", Password = "pswrd1" };
@@ -45,9 +49,10 @@ namespace CrmBox.WebUI.Controllers
                 AppRole role = new() { Name = "Root", NormalizedName = "ROOT" };
                 if (result.Succeeded)
                 {
-                    
+                    // Root kullanıcıma Tüm yetkileri verdim default olarak.
                     await _roleManager.CreateAsync(role);
                     await _userManager.AddToRoleAsync(rootUser, "Root");
+                    await _userManager.AddClaimsAsync(rootUser, claims );
                 }
 
             }

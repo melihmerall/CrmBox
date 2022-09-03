@@ -126,6 +126,12 @@
   <data name="Sms Gönder" xml:space="preserve">
     <value>Send Sms</value>
   </data>
+  <data name="Sms Gönderme İşlemi Başarılı" xml:space="preserve">
+    <value>Sms Sending Process is Success</value>
+  </data>
+  <data name="Sms Gönderme İşlemi Başarısız" xml:space="preserve">
+    <value>Sms Sending Process is Unsuccess</value>
+  </data>
   <data name="Telefon Numarası" xml:space="preserve">
     <value>PhoneNumber</value>
   </data>

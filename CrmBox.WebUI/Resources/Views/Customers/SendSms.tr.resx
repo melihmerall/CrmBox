@@ -126,6 +126,12 @@
   <data name="Sms Gönder" xml:space="preserve">
     <value>Sms Gönder</value>
   </data>
+  <data name="Sms Gönderme İşlemi Başarılı" xml:space="preserve">
+    <value>Sms Gönderme İşlemi Başarılı</value>
+  </data>
+  <data name="Sms Gönderme İşlemi Başarısız" xml:space="preserve">
+    <value>Sms Gönderme İşlemi Başarısız</value>
+  </data>
   <data name="Telefon Numarası" xml:space="preserve">
     <value>Telefon Numarası</value>
   </data>

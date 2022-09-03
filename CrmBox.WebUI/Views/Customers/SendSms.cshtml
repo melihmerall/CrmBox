@@ -24,9 +24,19 @@
             </div>
             <div class="card-footer">
 
+
+
                 <a asp-action="SendSms" asp-controller="Customers" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
                 <button type="submit" class="btn btn-success col-2 float-right">@localizer["Sms Gönder"] </button>
             </div>
         </div>
+        @if (ViewBag.State == true)
+        {
+                        <span class="bg-success">@localizer["Sms Gönderme İşlemi Başarılı"]</span>
+        }
+        else if (ViewBag.State == false)
+        {
+                        <span class="bg-danger">@localizer["Sms Gönderme İşlemi Başarısız"]</span>
+        }
     </div>
 </form>
