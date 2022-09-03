@@ -140,6 +140,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "SendSmstoCustomer")]
         public async Task<IActionResult> SendSms(int id)
         {
 

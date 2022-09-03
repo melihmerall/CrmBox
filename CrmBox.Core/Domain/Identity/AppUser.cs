@@ -12,10 +12,12 @@ namespace CrmBox.Core.Domain.Identity
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Avatar { get; set; }
         public string Password { get; set; }
+        public ICollection<Room> Rooms { get; set; }
+        public ICollection<Message> Messages { get; set; }
 
 
-  
 
 
 
