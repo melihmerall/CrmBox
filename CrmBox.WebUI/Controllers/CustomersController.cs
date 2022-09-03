@@ -2,12 +2,17 @@
 using CrmBox.Application.Services.Customer;
 using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
+using CrmBox.WebUI.Helper.Twilio;
 using CrmBox.WebUI.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
 
 namespace CrmBox.WebUI.Controllers
 {
@@ -16,11 +21,13 @@ namespace CrmBox.WebUI.Controllers
     {
         readonly ICustomerService _customerService;
         IMemoryCache _memoryCache;
+        readonly TwilioSettings _twilioOptions;
         const string cacheKey = "customerKey";
-        public CustomersController(ICustomerService customerService, IMemoryCache memoryCache)
+        public CustomersController(ICustomerService customerService, IMemoryCache memoryCache, IOptions<TwilioSettings> twilioOptions)
         {
             _customerService = customerService;
             _memoryCache = memoryCache;
+            _twilioOptions = twilioOptions.Value;
         }
 
         [HttpGet]
@@ -52,7 +59,7 @@ namespace CrmBox.WebUI.Controllers
 
         [HttpPost]
         [Authorize(Policy = "AddCustomer")]
-        public async Task<IActionResult> AddCustomer(Core.Domain.Customer model)
+        public async Task<IActionResult> AddCustomer(AddCustomerVM model)
         {
             if (ModelState.IsValid)
             {
@@ -81,26 +88,47 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "UpdateCustomer")]
         public IActionResult UpdateCustomer(int id)
         {
-            Customer customer = _customerService.GetById(id);
-            if (customer != null)
-                return View(customer);
-            else
-                throw new Exception("Belirtilen id ile eşleşen bir müşteri bulunamadı.");
+            var values = _customerService.GetById(id);
+            AddCustomerVM model = new AddCustomerVM
+            {
+                Address = values.Address,
+                CompanyName = values.CompanyName,
+                Email = values.Email,
+                FirstName = values.FirstName,
+                JobTitle = values.JobTitle,
+                LastName = values.LastName,
+                PhoneNumber = values.PhoneNumber,
+            };
+            return View(model);
+
         }
 
         [HttpPost]
         [Authorize(Policy = "UpdateCustomer")]
-        public IActionResult UpdateCustomer(Customer model)
+        public IActionResult UpdateCustomer(AddCustomerVM model)
         {
-            
+            var values = _customerService.GetById(model.Id);
+            {
+                values.Address = model.Address;
+                values.CompanyName = model.CompanyName;
+                values.CreatedTime = DateTime.Now;
+                values.Email = model.Email;
+                values.FirstName = model.FirstName;
+                values.JobTitle = model.JobTitle;
+                values.LastName = model.LastName;
+                values.PhoneNumber = model.PhoneNumber;
 
+            };
             if (ModelState.IsValid)
             {
-
-                _customerService.Update(model);
+                _customerService.Update(values);
                 return RedirectToAction("GetAllCustomers");
+
+
             }
-            throw new Exception("Güncelleme işlemi esnasında bir hata meydana geldi");
+            return View();
+
+
         }
 
         [HttpGet]
@@ -109,6 +137,46 @@ namespace CrmBox.WebUI.Controllers
         {
             await _customerService.DeleteAsync(id);
             return RedirectToAction("GetAllCustomers");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SendSms(int id)
+        {
+
+            var values = _customerService.GetById(id);
+
+            ViewBag.phoneNumber = values.PhoneNumber;
+            SendSmsVM model = new SendSmsVM
+            {
+                Id = values.Id,
+                PhoneNumber = values.PhoneNumber
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendSms(SendSmsVM vm)
+        {
+            TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
+            var values = _customerService.GetAll().Where(x => x.Id == vm.Id).FirstOrDefault();
+            {
+                values.Id = vm.Id;
+                values.PhoneNumber = vm.PhoneNumber;
+
+            };
+            try
+            {
+                var message = MessageResource.Create(
+                    body: "Messages" + vm.MessageBody,
+                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
+                    to: new Twilio.Types.PhoneNumber(vm.PhoneNumber));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return View();
         }
     }
 }

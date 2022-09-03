@@ -12,10 +12,23 @@ namespace CrmBox.WebUI.Helper
 {
     public class EmailHelper
     {
+
+        private readonly IConfiguration _config;
+
+        public EmailHelper()
+        {
+        }
+
+        public EmailHelper(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public bool SendEmail(string userEmail,string message)
         {
+            
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress("melih16-meral@hotmail.com");
+            mailMessage.From = new MailAddress(_config.GetSection("SenderMailAdress").Value);
             mailMessage.To.Add(new MailAddress(userEmail));
 
             mailMessage.Subject = "Confirm your email";
@@ -23,8 +36,8 @@ namespace CrmBox.WebUI.Helper
             mailMessage.Body = message;
 
             SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
-            client.Host = "smtp-mail.outlook.com";
+            client.Credentials = new System.Net.NetworkCredential(_config.GetSection("CredentialsUserName").Value, _config.GetSection("CredentialsPassword").Value);
+            client.Host = _config.GetSection("EmailHost").Value;
             client.Port = 587;
 
             try

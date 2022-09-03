@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CrmBox.Application.Services.Customer
 {
-    public class CustomerValidation: AbstractValidator<Core.Domain.Customer>
+    public class CustomerValidation: AbstractValidator<AddCustomerVM> 
     {
         public CustomerValidation()
         {
@@ -22,7 +22,7 @@ namespace CrmBox.Application.Services.Customer
             RuleFor(x => x.JobTitle).NotNull();
 
             RuleFor(x => x.Address).MinimumLength(10);
-            RuleFor(x => x.PhoneNumber).MinimumLength(11);
+            RuleFor(x => x.PhoneNumber).MinimumLength(12);
             RuleFor(x => x.Email).MinimumLength(6);
             RuleFor(x => x.FirstName).MinimumLength(3);
             RuleFor(x => x.LastName).MinimumLength(3);
@@ -31,7 +31,7 @@ namespace CrmBox.Application.Services.Customer
 
 
             RuleFor(x => x.Address).MaximumLength(350);
-            RuleFor(x => x.PhoneNumber).MaximumLength(11);
+            RuleFor(x => x.PhoneNumber).MaximumLength(12);
             RuleFor(x => x.Email).MaximumLength(50);
             RuleFor(x => x.FirstName).MaximumLength(30);
             RuleFor(x => x.LastName).MaximumLength(30);

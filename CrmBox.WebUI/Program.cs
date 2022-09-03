@@ -23,9 +23,14 @@ using System.Reflection;
 using Microsoft.Extensions.Hosting;
 using CrmBox.WebUI.Hubs;
 using Microsoft.AspNetCore.Http.Features;
+using CrmBox.WebUI.Helper.Twilio;
+using CrmBox.WebUI.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var provider = builder.Services.BuildServiceProvider();
+var configuration = provider.GetRequiredService<IConfiguration>();
+builder.Services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
+builder.Services.Configure<EmailHelper>(configuration.GetSection("EmailSender"));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
@@ -56,6 +61,8 @@ builder.Services.AddDbContext<CrmBoxContext>();
 builder.Services.AddDbContext<CrmBoxLogContext>();
 
 builder.Services.Configure<FormOptions>(x => x.ValueCountLimit = 1000000);
+
+
 
 //Add Cache
 builder.Services.AddMemoryCache();
@@ -101,6 +108,7 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 6;
         options.Password.RequiredUniqueChars = 1;
+       
 
         // Lockout settings.
         options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -162,7 +170,7 @@ policy => policy.RequireClaim("Add Customer"));
 policy => policy.RequireClaim("Update Customer"));
 
 
-    options.AddPolicy("Delete Customer",
+    options.AddPolicy("DeleteCustomer",
 policy => policy.RequireClaim("Delete Customer"));
 
     options.AddPolicy("Chat",
@@ -174,6 +182,7 @@ policy => policy.RequireClaim("Chat"));
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.AccessDeniedPath = new PathString("/Auth/AccessDenied");
+ 
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
