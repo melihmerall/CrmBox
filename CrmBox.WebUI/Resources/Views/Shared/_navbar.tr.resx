@@ -120,6 +120,9 @@
   <data name="Ana Sayfa" xml:space="preserve">
     <value>Ana Sayfa</value>
   </data>
+  <data name="Olarak giriş yaptı." xml:space="preserve">
+    <value>Olarak giriş yaptı.</value>
+  </data>
   <data name="Çıkış" xml:space="preserve">
     <value>Çıkış</value>
   </data>

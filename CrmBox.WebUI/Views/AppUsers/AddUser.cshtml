@@ -3,7 +3,7 @@
 @model AddUserVM
 @inject IViewLocalizer localizer
 <form method="post" asp-action="AddUser" asp-controller="AppUsers">
-
+    
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">@localizer["Kullanıcı Ekle"]</h3>
@@ -11,6 +11,7 @@
 
         <div class="card-body" style="display: block;">
 
+ 
             <div class="form-group">
                 <input type="text" asp-for="FirstName" class="form-control" placeholder="@localizer["Adı"]">
                 <span class="bg-danger" asp-validation-for="FirstName"></span>
@@ -33,7 +34,6 @@
             </div>
 
         </div>
-
 
         <div class="card-footer">
 

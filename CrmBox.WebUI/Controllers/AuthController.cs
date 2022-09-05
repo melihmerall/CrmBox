@@ -38,6 +38,7 @@ namespace CrmBox.WebUI.Controllers
 
             var roots = await _userManager.GetUsersInRoleAsync("Root");
 
+
             if (roots.Count == 0)
             {
                 AppUser rootUser = new() { FirstName = "root", LastName = "root", UserName = "root", Email = "root@root.com", Password = "pswrd1" };
@@ -51,7 +52,7 @@ namespace CrmBox.WebUI.Controllers
                 }
 
             }
-
+            
             return View();
         }
 
@@ -62,19 +63,25 @@ namespace CrmBox.WebUI.Controllers
             if (ModelState.IsValid)
             {
 
-                var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
+                var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, true);
 
-                // ekrana rolü çekmek için kullanacağım.
-                //var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == vM.Username);
+                // Giriş yapan kullanıcının Rolünü session ile viewwde göstermeyi tercih ettin. Viewbag da kullanılabilir.
+                var findUser =  _userManager.Users.FirstOrDefault(x => x.UserName == vM.Username);
+                var roleNameVB = await _userManager.GetRolesAsync(findUser);
+                HttpContext.Session.SetString("rolename", roleNameVB.FirstOrDefault());
+                //
+                ViewBag.userPass = findUser.Password;
+
                 if (result.Succeeded)
                 {
                     HttpContext.Session.SetString("username", vM.Username);
+ 
 
-                    
                     return RedirectToAction("GetAllCustomers", "Customers");
                 }
                 else
                 {
+                    
                     return View();
                 }
 

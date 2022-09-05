@@ -22,11 +22,12 @@
                 <p class="login-box-msg">@localizer["İşlem yapmak için oturum açınız"]</p>
 
                 <form asp-action="Login" asp-controller="Auth" method="post">
+
                     <div class="input-group mb-3">
 
                         <input type="text" asp-for="Username" class="form-control" placeholder="@localizer["Kullanıcı Adı"]">
                         <br />
-                        
+
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -37,7 +38,7 @@
                     <div class="input-group mb-3">
                         <input type="password" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
                         <br />
-                       
+
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -66,14 +67,11 @@
                 <p class="mb-1">
                     <a href="/Auth/ResetPassword">@localizer["Şifremi Unuttum"]</a>
                 </p>
-@*                <p class="mb-0">
-                    <a href="register.html" class="text-center">@localizer["Kayıt Ol"]</a>
-                </p>*@
+
             </div>
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
     </div>
     <!-- /.login-box -->
-
 </body>

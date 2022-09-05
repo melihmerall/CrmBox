@@ -69,7 +69,6 @@ namespace CrmBox.WebUI.Controllers
             {
                 AppUser appUser = new AppUser
                 {
-
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     UserName = model.UserName,
@@ -77,10 +76,9 @@ namespace CrmBox.WebUI.Controllers
                     Password = model.Password,
                 };
 
-                IdentityResult result = await _userManager.CreateAsync(appUser, model.Password);
+                var result =  await _userManager.CreateAsync(appUser, model.Password);
                 if (result.Succeeded)
                 {
-
                     return RedirectToAction("GetAllUsers");
                 }
             }

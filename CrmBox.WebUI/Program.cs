@@ -108,7 +108,8 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 6;
         options.Password.RequiredUniqueChars = 1;
-       
+        
+
 
         // Lockout settings.
         options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -116,13 +117,13 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
         options.Lockout.AllowedForNewUsers = true;
 
         // User settings.
-        options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-        options.User.RequireUniqueEmail = false;
+        //options.User.AllowedUserNameCharacters =
+        //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        options.User.RequireUniqueEmail = true;
 
     })
     .AddEntityFrameworkStores<CrmBoxIdentityContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders().Services.AddMvc();
 
 //Policy Rules
 builder.Services.AddAuthorization(options =>
