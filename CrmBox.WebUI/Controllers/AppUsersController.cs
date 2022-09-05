@@ -12,7 +12,7 @@ using System.Data;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles = "Root,Admin,Moderator")]
+
     public class AppUsersController : Controller
     {
 

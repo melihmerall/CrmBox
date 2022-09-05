@@ -12,8 +12,6 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CrmBox.WebUI.Controllers
 {
-
-    [Authorize(Roles = "Root,Admin,Moderator")]
     public class AppRolesController : Controller
     {
         readonly RoleManager<AppRole> _roleManager;
@@ -33,7 +31,7 @@ namespace CrmBox.WebUI.Controllers
         {
             var roles = _roleManager.Roles.ToList();
 
-            
+
 
 
             if (!_memoryCache.TryGetValue(cacheKey, out object list))
@@ -55,7 +53,7 @@ namespace CrmBox.WebUI.Controllers
         public IActionResult AddUserRole()
         {
             AddRoleVM model = new();
-            
+
             //model.Policies = Infrastructure.Extensions.Policies.PolicyTypes.Policies.Select(x => new PolicyWithIsSelectedVM { Policy = x, IsSelected = false }).ToList();
             return View(model);
         }
@@ -70,10 +68,10 @@ namespace CrmBox.WebUI.Controllers
                 {
 
                     Name = model.Name,
-                    
 
-            };
-               
+
+                };
+
                 var result = await _roleManager.CreateAsync(appRole);
                 if (result.Succeeded)
                 {
@@ -148,7 +146,7 @@ namespace CrmBox.WebUI.Controllers
             TempData["UserId"] = user.Id;
 
             var userRoles = await _userManager.GetRolesAsync(user);
-        
+
 
             List<AssignRoleVM> model = new List<AssignRoleVM>();
             foreach (var item in roles)
@@ -156,7 +154,7 @@ namespace CrmBox.WebUI.Controllers
                 AssignRoleVM m = new AssignRoleVM();
                 m.RoleId = item.Id;
                 m.Name = item.Name;
-                
+
 
                 m.Exist = userRoles.Contains(item.Name); // contains = eğer istenen değeri içeriyorsa.
                 model.Add(m);
@@ -199,7 +197,7 @@ namespace CrmBox.WebUI.Controllers
             var existingUserClaims = await _userManager.GetClaimsAsync(user);
             var model = new SelectUserClaimsVM
             {
-                UserId = id,
+                RoleId = id,
             };
             foreach (Claim claim in ClaimStore.AllClaims)
             {
@@ -217,29 +215,43 @@ namespace CrmBox.WebUI.Controllers
         }
         [HttpPost]
         [Authorize(Policy = "ManageUserClaims")]
-        public async Task<IActionResult> ManageUserClaims(SelectUserClaimsVM model,int id)
+        public async Task<IActionResult> ManageUserClaims(SelectUserClaimsVM model, int id)
         {
-             var user = _userManager.Users.FirstOrDefault(x => x.Id == id);
-            if (user == null)
+            var role = _roleManager.Roles.FirstOrDefault(x => x.Id == id);
+            if (role == null)
             {
-                ViewBag.ErrorMessage = $"User with Id = {model.UserId} cannot be found";
+                ViewBag.ErrorMessage = $"User with Id = {model.RoleId} cannot be found";
                 return View();
             }
-            var claims = await _userManager.GetClaimsAsync(user);
-            var result = await _userManager.RemoveClaimsAsync(user, claims);
-            if (!result.Succeeded) {
-                ModelState.AddModelError("", "Cannot Remove user existing Claims");
-                return View(model);
-            }
-            result = await _userManager.AddClaimsAsync(user,
-                model.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.ClaimType)));
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("", "Cannot Remove user existing Claims");
-                return View(model);
-            }
-            return RedirectToAction("GetAllUsers","AppUsers", new { Id = model.UserId });
-        }
 
+            // bu kısım claimleri kaldırmak için.
+            var claims = await _roleManager.GetClaimsAsync(role);
+            foreach (var claim in claims)
+            {
+                var result = await _roleManager.RemoveClaimAsync(role, claim);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Cannot Remove user existing Claims");
+                    return View(model);
+                }
+            }
+
+            // Bu kısım viewde seçilenleri yakalayıp foreach ile dönerek databaseye eklemek için
+            var claimss = model.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.ClaimType));
+
+            foreach (var claim in claimss)
+            {
+                var result = await _roleManager.AddClaimAsync(role, claim);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Cannot Remove user existing Claims");
+                    return View(model);
+                }
+
+            }
+            return RedirectToAction("GetAllUserRoles", "AppRoles");
+
+        }
     }
+
 }

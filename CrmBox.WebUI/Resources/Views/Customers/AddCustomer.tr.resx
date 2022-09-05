@@ -138,6 +138,9 @@
   <data name="Telefon Numarası" xml:space="preserve">
     <value>Telefon Numarası</value>
   </data>
+  <data name="Telefon Numarası Örnek: +90 500 000 00 00" xml:space="preserve">
+    <value>Telefon Numarası Örnek: +90 500 000 00 00</value>
+  </data>
   <data name="Unvan" xml:space="preserve">
     <value>Unvan</value>
   </data>

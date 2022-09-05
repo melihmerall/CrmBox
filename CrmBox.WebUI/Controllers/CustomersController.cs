@@ -16,7 +16,7 @@ using Twilio.Types;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles = "Root,Admin,Moderator")]
+    
     public class CustomersController : Controller
     {
         readonly ICustomerService _customerService;
