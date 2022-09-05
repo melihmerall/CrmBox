@@ -135,4 +135,7 @@
   <data name="Sil" xml:space="preserve">
     <value>Sil</value>
   </data>
+  <data name="Yetki Ver" xml:space="preserve">
+    <value>Yetki Ver</value>
+  </data>
 </root>

@@ -135,4 +135,7 @@
   <data name="Sil" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="Yetki Ver" xml:space="preserve">
+    <value>Give Permission</value>
+  </data>
 </root>

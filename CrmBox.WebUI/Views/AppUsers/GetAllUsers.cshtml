@@ -23,7 +23,7 @@
                                     <th>@localizer["Soyadı"]</th>
                                     <th>@localizer["E-Mail"]</th>
                                     <th>@localizer["Rol İşlemleri"]</th>
-                                    <th>@localizer["Yetki İşlemleri"]</th>
+
                                     <th>@localizer["Güncelle"]</th>
                                     <th>@localizer["Sil"]</th>
                                 </tr>
@@ -40,9 +40,6 @@
 
                                         <td>
                                             <a asp-action="AssignUserRole" asp-controller="AppRoles" asp-route-id="@user.Id" class="btn btn-success">@localizer["Rol Ata"]</a>
-                                        </td>
-                                        <td>
-                                            <a asp-action="ManageUserClaims" asp-controller="AppRoles" asp-route-id="@user.Id" class="btn btn-success">@localizer["Yetki Ver"]</a>
                                         </td>
 
                                         <td>
@@ -62,7 +59,7 @@
                                     <th>@localizer["Soyadı"]</th>
                                     <th>@localizer["E-Mail"]</th>
                                     <th>@localizer["Rol İşlemleri"]</th>
-                                    <th>@localizer["Yetki İşlemleri"]</th>
+
                                     <th>@localizer["Güncelle"]</th>
                                     <th>@localizer["Sil"]</th>
                                 </tr>

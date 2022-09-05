@@ -187,14 +187,14 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "ManageUserClaims")]
         public async Task<IActionResult> ManageUserClaims(int id)
         {
-            var user = _userManager.Users.FirstOrDefault(x => x.Id == id);
-            ViewBag.userName = user.UserName;
-            if (user == null)
+            var role = _roleManager.Roles.FirstOrDefault(x => x.Id == id);
+            ViewBag.roleName = role.Name;
+            if (role == null)
             {
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
                 return View();
             }
-            var existingUserClaims = await _userManager.GetClaimsAsync(user);
+            var existingUserClaims = await _roleManager.GetClaimsAsync(role);
             var model = new SelectUserClaimsVM
             {
                 RoleId = id,
