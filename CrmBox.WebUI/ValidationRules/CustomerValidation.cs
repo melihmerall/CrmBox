@@ -40,6 +40,8 @@ namespace CrmBox.Application.Services.Customer
             RuleFor(x => x.CompanyName).MaximumLength(20);
             RuleFor(x => x.JobTitle).MaximumLength(15);
 
+            RuleFor(x => x.PhoneNumber).Matches(@"^[+\d]+$");
+
          
 
 
@@ -47,7 +49,7 @@ namespace CrmBox.Application.Services.Customer
         private bool IsPhoneNumberMasking(string arg)
         {
             // Proje ilerki safhalarda kullanılabilir. Must komutu içinde çağırılıp.
-            Regex regex = new Regex(@"([\(? (\d{0,3})\)?\s]+[-\s])(?=\d{4})");
+            Regex regex = new Regex(@"^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$");
             return regex.IsMatch(arg);
         }
 

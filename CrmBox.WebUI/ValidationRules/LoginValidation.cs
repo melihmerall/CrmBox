@@ -30,7 +30,6 @@ namespace CrmBox.Application.Services.Customer
         }
         private bool IsPasswordValid(string arg)
         {
-            // Proje ilerki safhalarda kullanılabilir. Must komutu içinde çağırılıp.
             Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$");
             return regex.IsMatch(arg);
         }
