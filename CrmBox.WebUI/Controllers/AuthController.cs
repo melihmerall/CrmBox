@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using Twilio.TwiML.Messaging;
 
 namespace CrmBox.WebUI.Controllers
 {
@@ -46,11 +47,11 @@ namespace CrmBox.WebUI.Controllers
                 AppRole role = new() { Name = "Root", NormalizedName = "ROOT" };
                 if (result.Succeeded)
                 {
-                    
+                 
                     await _roleManager.CreateAsync(role);
                     await _userManager.AddToRoleAsync(rootUser, "Root");
                 }
-
+            
             }
             
             return View();
@@ -62,10 +63,9 @@ namespace CrmBox.WebUI.Controllers
 
             if (ModelState.IsValid)
             {
+                var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
 
-                var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, true);
-
-                // Giriş yapan kullanıcının Rolünü session ile viewwde göstermeyi tercih ettin. Viewbag da kullanılabilir.
+                // Giriş yapan kullanıcının Rolünü session ile viewwde göstermeyi tercih ettim. Viewbag da kullanılabilir.
                 var findUser =  _userManager.Users.FirstOrDefault(x => x.UserName == vM.Username);
                 var roleNameVB = await _userManager.GetRolesAsync(findUser);
                 HttpContext.Session.SetString("rolename", roleNameVB.FirstOrDefault());
@@ -75,17 +75,15 @@ namespace CrmBox.WebUI.Controllers
                 if (result.Succeeded)
                 {
                     HttpContext.Session.SetString("username", vM.Username);
- 
+                    ViewBag.State = true;
 
                     return RedirectToAction("GetAllCustomers", "Customers");
                 }
                 else
                 {
+                    ViewBag.State = false;
                     
-                    return View();
                 }
-
-
             }
             return View();
 

@@ -20,51 +20,76 @@
             </div>
             <div class="card-body">
                 <p class="login-box-msg">@localizer["İşlem yapmak için oturum açınız"]</p>
+                @if (ViewBag.State == null)
+                {
+                    <form asp-action="Login" asp-controller="Auth" method="post">
 
-                <form asp-action="Login" asp-controller="Auth" method="post">
+                        <div class="input-group mb-3">
 
-                    <div class="input-group mb-3">
+                            <input type="text" asp-for="Username" class="form-control" placeholder="@localizer["Kullanıcı Adı"]">
+                            <br />
 
-                        <input type="text" asp-for="Username" class="form-control" placeholder="@localizer["Kullanıcı Adı"]">
-                        <br />
-
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-user"></span>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <span asp-validation-for="Username"></span>
-                    <div class="input-group mb-3">
-                        <input type="password" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
-                        <br />
+                        <span asp-validation-for="Username"></span>
+                        <div class="input-group mb-3">
+                            <input type="password" asp-for="Password" class="form-control" placeholder="@localizer["Şifre"]">
 
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                            <br />
+
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <span asp-validation-for="Password"></span>
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                <input type="checkbox" id="remember">
-                                <label for="remember">
-                                    @localizer["Beni Hatırla"]
-                                </label>
+                        <span asp-validation-for="Password"></span>
+
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="icheck-primary">
+                                    <input type="checkbox" id="remember">
+                                    <label for="remember">
+                                        @localizer["Beni Hatırla"]
+                                    </label>
+                                </div>
                             </div>
+                            <!-- /.col -->
+                            <div class="col-4">
+                                <input type="submit" value="@localizer["Giriş Yap"]" class="btn btn-primary btn-block">
+                            </div>
+                            <!-- /.col -->
                         </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                            <input type="submit" value="@localizer["Giriş Yap"]" class="btn btn-primary btn-block">
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                </form>
 
 
-                <p class="mb-1">
+                    </form>
+                }
+                else
+                {
+                    if (ViewBag.State)
+                    {
+                        <div class="alert-success">
+
+                            @localizer["Giriş Başarılı"]
+                        </div>
+                    }
+                    else
+                    {
+                        @:
+                        <div class="alert-danger mt-2">@localizer["Kullanıcı Adı veya Şifre Hatalı"]</div>
+                        <div class="text alert-info mt-4">5 yanlış girişte hesabın 1 dakika kitlenecek. Şifreni sıfırlamayı deneyebilirsin.</div>
+                        <div class=" m-2 ">
+                            <a href="/Auth/Login" type="submit" value="@localizer["Tekrar Dene"]" class="btn btn-primary">Tekrar Dene</a>
+                            
+                        </div>
+                       
+                    }
+                }
+                <p class="m-6 ">
                     <a href="/Auth/ResetPassword">@localizer["Şifremi Unuttum"]</a>
                 </p>
 
