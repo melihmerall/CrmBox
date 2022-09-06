@@ -23,7 +23,7 @@ namespace CrmBox.Application.Services.Customer
 
             RuleFor(x => x.Username).NotNull();
             RuleFor(x => x.Username).MinimumLength(3);
-            RuleFor(x => x.Username).MaximumLength(13);
+            RuleFor(x => x.Username).MaximumLength(25);
             RuleFor(x => x.Password)
                     .NotEmpty().MinimumLength(5).MaximumLength(16);
     
