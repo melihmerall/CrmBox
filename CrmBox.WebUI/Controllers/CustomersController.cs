@@ -168,14 +168,21 @@ namespace CrmBox.WebUI.Controllers
             };
             try
             {
-                var message = MessageResource.Create(
-                    body: "Messages" + vm.MessageBody,
-                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
-                    to: new Twilio.Types.PhoneNumber(vm.PhoneNumber));
+                if (ModelState.IsValid)
+                {
+                    var message = MessageResource.Create(
+                   body: "Messages: " + vm.MessageBody,
+                   from: new PhoneNumber(_twilioOptions.PhoneNumber),
+                   to: new PhoneNumber(vm.PhoneNumber));
+
+                    ViewBag.State = true;
+                }
+
             }
             catch (Exception ex)
             {
 
+                ViewBag.State = false;
                 throw;
             }
             return View();

@@ -6,9 +6,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace CrmBox.Persistance.Context;
 
-public class CrmBoxIdentityContext : IdentityDbContext<AppUser, AppRole,int>
+public class CrmBoxIdentityContext : IdentityDbContext<AppUser, AppRole, int>
 {
     readonly IConfiguration _configuration;
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<Message> Messages { get; set; }
     public CrmBoxIdentityContext(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -22,6 +24,7 @@ public class CrmBoxIdentityContext : IdentityDbContext<AppUser, AppRole,int>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
 
 
 

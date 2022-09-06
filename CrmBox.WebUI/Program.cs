@@ -29,8 +29,12 @@ using CrmBox.WebUI.Helper;
 var builder = WebApplication.CreateBuilder(args);
 var provider = builder.Services.BuildServiceProvider();
 var configuration = provider.GetRequiredService<IConfiguration>();
+
 builder.Services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
 builder.Services.Configure<EmailHelper>(configuration.GetSection("EmailSender"));
+
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
@@ -61,7 +65,6 @@ builder.Services.AddDbContext<CrmBoxContext>();
 builder.Services.AddDbContext<CrmBoxLogContext>();
 
 builder.Services.Configure<FormOptions>(x => x.ValueCountLimit = 1000000);
-
 
 
 //Add Cache
@@ -198,6 +201,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Auth/Login";
     options.AccessDeniedPath = "/Auth/AccessDenied";
     options.SlidingExpiration = true;
+  
 });
 
 
