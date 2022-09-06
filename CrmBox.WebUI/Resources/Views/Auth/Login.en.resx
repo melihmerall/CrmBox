@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5 yanlış girişte hesabın 1 dakika kitlenecek. Şifreni sıfırlamayı deneyebilirsin." xml:space="preserve">
+    <value>Your account will be locked for 1 minute after 5 wrong logins. You can try to reset your password.</value>
+  </data>
   <data name="Beni Hatırla" xml:space="preserve">
     <value>Remember Me</value>
   </data>
@@ -129,13 +132,19 @@
   <data name="Kullanıcı Adı" xml:space="preserve">
     <value>Username</value>
   </data>
+  <data name="Kullanıcı Adı veya Şifre Hatalı" xml:space="preserve">
+    <value>Username or Password is Wrong</value>
+  </data>
+  <data name="Tekrar Dene" xml:space="preserve">
+    <value>Try Again</value>
+  </data>
   <data name="İşlem yapmak için oturum açınız" xml:space="preserve">
     <value>Sign in to start your session</value>
   </data>
+  <data name="Şifre" xml:space="preserve">
+    <value>Password</value>
+  </data>
   <data name="Şifremi Unuttum" xml:space="preserve">
     <value>I forgot my password</value>
-  </data>
-  <data name="Şİifre" xml:space="preserve">
-    <value>Password</value>
   </data>
 </root>

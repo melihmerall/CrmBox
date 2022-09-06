@@ -120,6 +120,9 @@
   <data name="Kullanıcılar" xml:space="preserve">
     <value>Kullanıcılar</value>
   </data>
+  <data name="Mesajlaşma Odası" xml:space="preserve">
+    <value>Mesajlaşma Odası</value>
+  </data>
   <data name="Müşteriler" xml:space="preserve">
     <value>Müşteriler</value>
   </data>

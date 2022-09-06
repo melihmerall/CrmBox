@@ -144,6 +144,9 @@
   <data name="Sil" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="Sms Gönder" xml:space="preserve">
+    <value>Send Sms</value>
+  </data>
   <data name="Unvan" xml:space="preserve">
     <value>Title</value>
   </data>

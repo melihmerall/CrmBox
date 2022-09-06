@@ -138,4 +138,7 @@
   <data name="Yetki Ver" xml:space="preserve">
     <value>Give Permission</value>
   </data>
+  <data name="Yetki İşlemleri" xml:space="preserve">
+    <value>Give Permission</value>
+  </data>
 </root>

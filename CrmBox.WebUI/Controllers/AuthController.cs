@@ -65,15 +65,16 @@ namespace CrmBox.WebUI.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
 
-                // Giriş yapan kullanıcının Rolünü session ile viewwde göstermeyi tercih ettim. Viewbag da kullanılabilir.
-                var findUser =  _userManager.Users.FirstOrDefault(x => x.UserName == vM.Username);
-                var roleNameVB = await _userManager.GetRolesAsync(findUser);
-                HttpContext.Session.SetString("rolename", roleNameVB.FirstOrDefault());
-                //
-                ViewBag.userPass = findUser.Password;
+
 
                 if (result.Succeeded)
                 {
+                    // Giriş yapan kullanıcının Rolünü session ile viewwde göstermeyi tercih ettim. Viewbag da kullanılabilir.
+                    var findUser = _userManager.Users.FirstOrDefault(x => x.UserName == vM.Username);
+                    var roleNameVB = await _userManager.GetRolesAsync(findUser);
+                    HttpContext.Session.SetString("rolename", roleNameVB.FirstOrDefault());
+                    //
+                    ViewBag.userPass = findUser.Password;
                     HttpContext.Session.SetString("username", vM.Username);
                     ViewBag.State = true;
 
