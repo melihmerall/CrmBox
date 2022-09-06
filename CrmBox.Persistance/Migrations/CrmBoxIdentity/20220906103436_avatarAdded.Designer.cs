@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrmBox.Persistance.Migrations.CrmBoxIdentity
 {
     [DbContext(typeof(CrmBoxIdentityContext))]
-    [Migration("20220903141606_ChatRoomAdded")]
-    partial class ChatRoomAdded
+    [Migration("20220906103436_avatarAdded")]
+    partial class avatarAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

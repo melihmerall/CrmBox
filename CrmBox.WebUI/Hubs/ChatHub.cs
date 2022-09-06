@@ -110,7 +110,7 @@ namespace CrmBox.WebUI.Hubs
                     _ConnectionsMap.Add(IdentityName, Context.ConnectionId);
                 }
 
-                Clients.Caller.SendAsync("getProfileInfo", user.FirstName, user.Avatar);
+                Clients.Caller.SendAsync("getProfileInfo", user.FirstName);
             }
             catch (Exception ex)
             {
