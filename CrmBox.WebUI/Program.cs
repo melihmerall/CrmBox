@@ -176,6 +176,9 @@ policy => policy.RequireClaim("Delete Customer"));
 
     options.AddPolicy("Chat",
 policy => policy.RequireClaim("Chat"));
+
+    options.AddPolicy("SendSms",
+policy => policy.RequireClaim("Send Sms"));
 });
 //Policy Rules
 

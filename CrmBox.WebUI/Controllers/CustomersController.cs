@@ -140,6 +140,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy ="SendSms")]
         public async Task<IActionResult> SendSms(int id)
         {
 
@@ -155,6 +156,7 @@ namespace CrmBox.WebUI.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize(Policy = "SendSms")]
         public async Task<IActionResult> SendSms(SendSmsVM vm)
         {
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
