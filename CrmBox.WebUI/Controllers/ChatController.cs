@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace CrmBox.WebUI.Controllers
 {
-    [Authorize(Roles ="Admin,Moderator,Root")]
+    
     public class ChatController : Controller
     {
         private readonly CrmBoxIdentityContext _context;
