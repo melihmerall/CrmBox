@@ -31,7 +31,7 @@ namespace CrmBox.Infrastructure.Extensions.Policies
             new Claim("Add Customer","Add Customer"),
             new Claim("Update Customer","Update Customer"),
             new Claim("Delete Customer","Delete Customer"),
-            new Claim("Send Sms to Customer","Send Sms to Customer"),
+            new Claim("Send Sms","Send Sms"),
 
             //ChatController
             new Claim("Chat","Chat"),

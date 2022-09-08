@@ -240,6 +240,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
 app.MapHub<UserHub>("/hubs/userCount");
-app.MapHub<ChatHub>("/hubs/chat");
+app.MapHub<ChatHub>("/chatHub");
 app.Run();
 

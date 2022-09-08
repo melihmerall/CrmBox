@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Chat.Web.Helpers;
+
 using CrmBox.Core.Domain;
 using CrmBox.WebUI.Models;
 using System;
@@ -16,9 +16,8 @@ namespace Chat.Web.Mappings
             CreateMap<Message, MessageVM>()
                 .ForMember(dst => dst.From, opt => opt.MapFrom(x => x.FromUser.FirstName))
                .ForMember(dst => dst.From, opt => opt.MapFrom(x => x.FromUser.LastName))
-                .ForMember(dst => dst.Room, opt => opt.MapFrom(x => x.ToRoom.Name))
-                //.ForMember(dst => dst.Avatar, opt => opt.MapFrom(x => x.FromUser.Avatar))
-                .ForMember(dst => dst.Content, opt => opt.MapFrom(x => BasicEmojis.ParseEmojis(x.Content)));
+                .ForMember(dst => dst.Room, opt => opt.MapFrom(x => x.ToRoom.Name));
+
 
             CreateMap<MessageVM, Message>();
         }

@@ -1,6 +1,6 @@
 ﻿// Bağlantımı kurdum
 var connection = new signalR.HubConnectionBuilder()
-    .withUrl("/hubs/chat")
+    .withUrl("/chatHub")
     .withAutomaticReconnect([0, 1000, 5000, null])
     .build();
 
@@ -18,10 +18,19 @@ connection.on("ReceiveUserDisconnected", function (userId, userName) {
 });
 
 connection.on("ReceivePrivateMessage", function (senderId, senderName, receiverId, message, chatId, receiverName) {
-    addPrivateMessage(`[${receiverName} ]${senderName} : ${message}`);
-})
+    addPrivateMessage(`[${receiverName} ]${senderName} : ${message}`)
+});
 
+connection.on("receiveMessage", message => (
+    $("div").append(message + "<br>")));
 
+function sendMessage() {
+    let inputMsg = document.getElementById("txtMessageBox");
+
+    var message = inputMsg.value;
+    connection.invoke("SendMessageAsync", message);
+    
+}
 
 
 function sendPrivateMessage() {
