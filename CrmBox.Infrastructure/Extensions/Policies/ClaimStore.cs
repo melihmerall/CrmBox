@@ -34,7 +34,7 @@ namespace CrmBox.Infrastructure.Extensions.Policies
             new Claim("Send Sms to Customer","Send Sms to Customer"),
 
             //ChatController
-            new Claim("Chat","Chat"),
+            new Claim("Customer Chat Support","Customer Chat Support"),
 
 
 

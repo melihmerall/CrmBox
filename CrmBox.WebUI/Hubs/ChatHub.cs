@@ -9,262 +9,111 @@ using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using CrmBox.Application.Interfaces.Chat;
 
 namespace CrmBox.WebUI.Hubs
 {
     public class ChatHub : Hub
     {
-        public readonly static List<UserProfileVM> _Connections = new List<UserProfileVM>();
-        private readonly static Dictionary<string, string> _ConnectionsMap = new Dictionary<string, string>();
+        private readonly IChatRoomService _chatRoomService;
+        private readonly IHubContext<AgentHub> _agentHub;
 
-        private readonly CrmBoxIdentityContext _context;
-        private readonly IMapper _mapper;
-
-        public ChatHub(CrmBoxIdentityContext context, IMapper mapper)
+        public ChatHub(IChatRoomService chatRoomService, IHubContext<AgentHub> agentHub)
         {
-            _context = context;
-            _mapper = mapper;
-        }
-        private readonly CrmBoxIdentityContext _db;
-        public ChatHub(CrmBoxIdentityContext db)
-        {
-            _db = db;
+            _chatRoomService = chatRoomService;
+            _agentHub = agentHub;
         }
 
-
-
-        public async Task SendPrivate(string receiverName, string message)
+        public override async Task OnConnectedAsync()
         {
-            if (_ConnectionsMap.TryGetValue(receiverName, out string userId))
+            if (Context.User.Identity.IsAuthenticated)
             {
-                // Who is the sender;
-                var sender = _Connections.Where(u => u.Username == IdentityName).First();
-
-                if (!string.IsNullOrEmpty(message.Trim()))
-                {
-                    // Build the message
-                    var messageViewModel = new MessageVM()
-                    {
-                        Content = Regex.Replace(message, @"<.*?>", string.Empty),
-                        From = sender.FirstName + sender.LastName,
-                        Avatar = sender.Avatar,
-                        Room = "",
-                        Timestamp = DateTime.Now
-                    };
-
-                    // Send the message
-                    await Clients.Client(userId).SendAsync("newMessage", messageViewModel);
-                    await Clients.Caller.SendAsync("newMessage", messageViewModel);
-                }
+                await base.OnConnectedAsync();
+                return;
             }
-        }
 
-        public async Task Join(string roomName)
-        {
-            try
-            {
-                var user = _Connections.Where(u => u.Username == IdentityName).FirstOrDefault();
-                if (user != null && user.CurrentRoom != roomName)
-                {
-                    // Remove user from others list
-                    if (!string.IsNullOrEmpty(user.CurrentRoom))
-                        await Clients.OthersInGroup(user.CurrentRoom).SendAsync("removeUser", user);
 
-                    // Join to new chat room
-                    await Leave(user.CurrentRoom);
-                    await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-                    user.CurrentRoom = roomName;
+            var roomId = await _chatRoomService.CreateRoom(
+                Context.ConnectionId);
 
-                    // Tell others to update their list of users
-                    await Clients.OthersInGroup(roomName).SendAsync("addUser", user);
-                }
-            }
-            catch (Exception ex)
-            {
-                await Clients.Caller.SendAsync("onError", "You failed to join the chat room!" + ex.Message);
-            }
-        }
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId,roomId.ToString());
 
-        public async Task Leave(string roomName)
-        {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
-        }
+            await Clients.Caller.SendAsync(
+                "ReceiveMessage",
+                "Müşteri Destek Sistemi",
+                DateTimeOffset.UtcNow,
+                "Merhaba, Nasıl Yardımcı Olabilirim ?");
 
-        public IEnumerable<UserProfileVM> GetUsers(string roomName)
-        {
-            return _Connections.Where(u => u.CurrentRoom == roomName).ToList();
-        }
-
-        public override Task OnConnectedAsync()
-        {
-            try
-            {
-                var user = _context.Users.Where(u => u.UserName == IdentityName).FirstOrDefault();
-                var userViewModel = _mapper.Map<AppUser, UserProfileVM>(user);
-                userViewModel.Device = GetDevice();
-                userViewModel.CurrentRoom = "";
-
-                if (!_Connections.Any(u => u.Username == IdentityName))
-                {
-                    _Connections.Add(userViewModel);
-                    _ConnectionsMap.Add(IdentityName, Context.ConnectionId);
-                }
-
-                Clients.Caller.SendAsync("getProfileInfo", user.FirstName);
-            }
-            catch (Exception ex)
-            {
-                Clients.Caller.SendAsync("onError", "OnConnected:" + ex.Message);
-            }
-            return base.OnConnectedAsync();
+            await base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            try
-            {
-                var user = _Connections.Where(u => u.Username == IdentityName).First();
-                _Connections.Remove(user);
-
-                // Tell other users to remove you from their list
-                Clients.OthersInGroup(user.CurrentRoom).SendAsync("removeUser", user);
-
-                // Remove mapping
-                _ConnectionsMap.Remove(user.Username);
-            }
-            catch (Exception ex)
-            {
-                Clients.Caller.SendAsync("onError", "OnDisconnected: " + ex.Message);
-            }
-
             return base.OnDisconnectedAsync(exception);
         }
 
-        private string IdentityName
+        public async Task SendMessage(string name, string text)
         {
-            get { return Context.User.Identity.Name; }
+
+            var roomId = await
+                _chatRoomService.GetRoomForConnectionId(
+                    Context.ConnectionId);
+
+
+            var message = new ChatMessage()
+            {
+                SenderName = name,
+                Text = text,
+                SentDT = DateTimeOffset.UtcNow
+            };
+            await _chatRoomService.AddMessage(roomId, message);
+
+
+
+            // Broadcast to all clients
+            await Clients.Group(roomId.ToString()).SendAsync(
+                "ReceiveMessage",
+                message.SenderName,
+                message.SentDT,
+                message.Text);
         }
 
-        private string GetDevice()
+        public async Task SetName(string visitorName)
         {
-            var device = Context.GetHttpContext().Request.Headers["Device"].ToString();
-            if (!string.IsNullOrEmpty(device) && (device.Equals("Desktop") || device.Equals("Mobile")))
-                return device;
+            var roomName = $"Müşteri Adı: {visitorName}";
 
-            return "Web";
+            var roomId = await _chatRoomService.GetRoomForConnectionId(
+                Context.ConnectionId);
+
+            await _chatRoomService.SetRoomName(roomId, roomName);
+
+            await _agentHub.Clients.All
+                .SendAsync(
+                    "ActiveRooms",
+                    await _chatRoomService.GetAllRooms());
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //public override Task OnConnectedAsync()
-        //{
-        //    var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    if (!String.IsNullOrEmpty(UserId))
-        //    {
-        //        var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-        //        Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected", UserId, userName);
-        //        HubConnections.AddUserConnection(UserId, Context.ConnectionId);
-        //    }
-        //    return base.OnConnectedAsync();
-        //}
-
-        //public override Task OnDisconnectedAsync(Exception? exception)
-        //{
-        //    var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //    if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
-        //    {
-        //        var UserConnections = HubConnections.Users[UserId];
-        //        UserConnections.Remove(Context.ConnectionId);
-
-        //        HubConnections.Users.Remove(UserId);
-        //        if (UserConnections.Any())
-        //            HubConnections.Users.Add(UserId, UserConnections);
-        //    }
-
-        //    if (!String.IsNullOrEmpty(UserId))
-        //    {
-        //        var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-        //        Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
-        //        HubConnections.AddUserConnection(UserId, Context.ConnectionId);
-        //    }
-        //    return base.OnDisconnectedAsync(exception);
-        //}
-
-
-        public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
+        public async Task JoinRoom(Guid roomId)
         {
-            var senderId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var senderName = _db.Users.FirstOrDefault(u => u.Id.ToString() == senderId).UserName;
+            if (roomId == Guid.Empty)
+            {
+                throw new ArgumentException("invalid id");
+            }
 
-            var users = new string[] { senderId, receiverId };
-
-            await Clients.Users(users).SendAsync("ReceivePrivateMessage", senderId, senderName, receiverId, message, Guid.NewGuid(), receiverName);
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId, roomId.ToString());
         }
-
-        public async Task SendOpenPrivateChat(string receiverId)
+        public async Task LeaveRoom(Guid roomId)
         {
-            var username = Context.User.FindFirstValue(ClaimTypes.Name);
-            var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (roomId == Guid.Empty)
+            {
+                throw new ArgumentException("invalid id");
+            }
 
-            await Clients.User(receiverId).SendAsync("ReceiveOpenPrivateChat", userId, username);
+            await Groups.RemoveFromGroupAsync(
+                Context.ConnectionId, roomId.ToString());
         }
-
-        public async Task SendDeletePrivateChat(string chartId)
-        {
-            await Clients.All.SendAsync("ReceiveDeletePrivateChat", chartId);
-        }
-
-        //public async Task SendMessageToAll(string user, string message)
-        //{
-        //    await Clients.All.SendAsync("MessageReceived", user, message);
-        //}
-        //[Authorize]
-        //public async Task SendMessageToReceiver(string sender, string receiver, string message)
-        //{
-        //    var userId = _db.Users.FirstOrDefault(u => u.Email.ToLower() == receiver.ToLower()).Id;
-
-        //    if (!string.IsNullOrEmpty(userId))
-        //    {
-        //        await Clients.User(userId).SendAsync("MessageReceived", sender, message);
-        //    }
-
-        //}
 
     }
 

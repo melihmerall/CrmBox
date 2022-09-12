@@ -22,8 +22,6 @@ connection.on("ReceivePrivateMessage", function (senderId, senderName, receiverI
 })
 
 
-
-
 function sendPrivateMessage() {
     let inputMsg = document.getElementById('txtPrivateMessage');
     let ddlSelUser = document.getElementById('ddlSelUser');
@@ -126,7 +124,7 @@ function addMessage(msg) {
         let li = document.createElement("li");
         li.innerHTML = msg;
         ui.appendChild(li);
-}
+    }
 
 
 

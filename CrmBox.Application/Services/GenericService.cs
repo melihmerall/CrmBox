@@ -50,9 +50,6 @@ public class GenericService<TEntity, TContext> : IGenericService<TEntity>
 
     public void Update(TEntity entity)
     {
-
-
-
         var updateEntity = _context.Entry(entity);
         updateEntity.State = EntityState.Modified;
         _context.SaveChanges();

@@ -20,11 +20,13 @@ using Serilog;
 using System.Data;
 using System.Globalization;
 using System.Reflection;
+using CrmBox.Application.Interfaces.Chat;
 using Microsoft.Extensions.Hosting;
 using CrmBox.WebUI.Hubs;
 using Microsoft.AspNetCore.Http.Features;
 using CrmBox.WebUI.Helper.Twilio;
 using CrmBox.WebUI.Helper;
+using CrmBox.Application.Services.Chat;
 
 var builder = WebApplication.CreateBuilder(args);
 var provider = builder.Services.BuildServiceProvider();
@@ -66,6 +68,8 @@ builder.Services.AddDbContext<CrmBoxLogContext>();
 
 builder.Services.Configure<FormOptions>(x => x.ValueCountLimit = 1000000);
 
+builder.Services.AddSingleton<IChatRoomService,
+InMemoryChatRoomService>();
 
 //Add Cache
 builder.Services.AddMemoryCache();
@@ -177,12 +181,16 @@ policy => policy.RequireClaim("Update Customer"));
     options.AddPolicy("DeleteCustomer",
 policy => policy.RequireClaim("Delete Customer"));
 
-    options.AddPolicy("Chat",
-policy => policy.RequireClaim("Chat"));
+
 
     options.AddPolicy("SendSms",
 policy => policy.RequireClaim("Send Sms"));
+
+    options.AddPolicy("CustomerChatSupport",
+        policy => policy.RequireClaim("Customer Chat Support"));
+
 });
+
 //Policy Rules
 
 
@@ -219,8 +227,6 @@ if (!app.Environment.IsDevelopment())
 
 }
 
-
-
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -239,7 +245,8 @@ app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetReq
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
-app.MapHub<UserHub>("/hubs/userCount");
-app.MapHub<ChatHub>("/hubs/chat");
+
+app.MapHub<ChatHub>("/chatHub");
+app.MapHub<AgentHub>("/agentHub");
 app.Run();
 

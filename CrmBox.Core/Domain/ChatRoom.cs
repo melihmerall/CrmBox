@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CrmBox.Core.Domain.Base;
 
 namespace CrmBox.Core.Domain
 {
-    public class Room
+    public class ChatRoom : BaseEntity
     {
-        public int Id { get; set; }
+        public string OwnerConnectionId { get; set; }
         public string Name { get; set; }
-        public AppUser Admin { get; set; }
-        public ICollection<Message> Messages { get; set; }
     }
 }

@@ -69,8 +69,6 @@ namespace CrmBox.WebUI.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
 
-
-
                 if (result.Succeeded)
                 {
                     // Giriş yapan kullanıcının Rolünü session ile viewwde göstermeyi tercih ettim. Viewbag da kullanılabilir.
