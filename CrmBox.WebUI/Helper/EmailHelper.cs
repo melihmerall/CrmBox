@@ -28,8 +28,9 @@ namespace CrmBox.WebUI.Helper
         {
 
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress("melih16-meral@hotmail.com");
-            mailMessage.To.Add(new MailAddress(userEmail));
+            mailMessage.IsBodyHtml = true;
+            mailMessage.From = new MailAddress("melih16-meral@hotmail.com", "Şifre Güncelleme", System.Text.Encoding.UTF8);
+            mailMessage.To.Add(userEmail);
 
             mailMessage.Subject = "Confirm your email";
             mailMessage.IsBodyHtml = true;
@@ -39,7 +40,7 @@ namespace CrmBox.WebUI.Helper
             client.Credentials = new System.Net.NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
             client.Host = "smtp-mail.outlook.com";
             client.Port = 587;
-
+            client.EnableSsl = true;
 
             client.Send(mailMessage);
             return true;
