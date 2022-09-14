@@ -131,7 +131,6 @@ namespace CrmBox.WebUI.Controllers
 
             }
 
-
             return View();
         }
         [HttpGet("[action]/{userId}/{token}")]

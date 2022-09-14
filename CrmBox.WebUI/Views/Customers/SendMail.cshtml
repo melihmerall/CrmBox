@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SendMailVM
+@inject IViewLocalizer localizer
+<form method="post" asp-action="SendMail" asp-controller="Customers">
+    <div class="card card-primary m-3">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">@localizer["Mail Gönder"]</h3>
+            </div>
+
+            <div class="card-body" style="display: block;">
+                <div class="form-group">
+                    <label asp-for="Messages">@localizer["Mesaj"]</label>
+                    <input asp-for="Messages" placeholder="@localizer["Mesaj"]" type="text" class="form-control" />
+                    <span class="bg-danger" asp-validation-for="Messages"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Mail">@localizer["Mail Adresi"]</label>
+                    <input asp-for="Mail"  placeholder="@localizer["Mail Adresi"]" type="text" class="form-control" />
+                    <span class="bg-danger"  asp-validation-for="Mail"></span>
+                </div>
+            </div>
+            <div class="card-footer">
+
+
+
+                <a asp-action="GetAllCustomers" asp-controller="Customers" class="btn btn-secondary col-2">@localizer["Geri Dön"]</a>
+                <button type="submit" class="btn btn-success col-2 float-right">@localizer["Mail Gönder"] </button>
+            </div>
+        </div>
+        @if (ViewBag.State == true)
+        {
+                        <span class="bg-success">@localizer["Mail Gönderme İşlemi Başarılı"]</span>
+        }
+        else if (ViewBag.State == false)
+        {
+                        <span class="bg-danger">@localizer["Mail Gönderme İşlemi Başarısız"]</span>
+        }
+    </div>
+</form>

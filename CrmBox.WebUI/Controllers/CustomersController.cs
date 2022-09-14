@@ -2,6 +2,7 @@
 using CrmBox.Application.Services.Customer;
 using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
+using CrmBox.WebUI.Helper;
 using CrmBox.WebUI.Helper.Twilio;
 using CrmBox.WebUI.Models;
 using FluentValidation.Results;
@@ -16,7 +17,7 @@ using Twilio.Types;
 
 namespace CrmBox.WebUI.Controllers
 {
-    
+
     public class CustomersController : Controller
     {
         readonly ICustomerService _customerService;
@@ -140,7 +141,7 @@ namespace CrmBox.WebUI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy ="SendSms")]
+        [Authorize(Policy = "SendSms")]
         public async Task<IActionResult> SendSms(int id)
         {
 
@@ -187,5 +188,50 @@ namespace CrmBox.WebUI.Controllers
             }
             return View();
         }
+        [HttpGet]
+        public IActionResult SendMail()
+        {
+            //var values = _customerService.GetById(id);
+
+
+            //SendMailVM model = new SendMailVM
+            //{
+            //    Id = values.Id,
+            //    Mail = values.Email,
+
+            //};
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SendMail(SendMailVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                Customer customer = _customerService.GetAll().Where(x => x.Id == model.Id).FirstOrDefault();
+                if (customer != null)
+                {
+                    try
+                    {
+
+                        EmailHelper emailHelper = new EmailHelper();
+                        emailHelper.SendEmail(model.Mail, model.Messages);
+                        ViewBag.State = true;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        ViewBag.State = false;
+                        throw;
+                    }
+                }
+                
+            }
+            return View();
+        }
+
+
+
     }
 }
+
