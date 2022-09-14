@@ -239,7 +239,7 @@ app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetReq
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
-app.MapHub<UserHub>("/hubs/userCount");
+//app.MapHub<UserHub>("/hubs/userCount");
 app.MapHub<ChatHub>("/chatHub");
 app.Run();
 

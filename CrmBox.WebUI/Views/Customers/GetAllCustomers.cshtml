@@ -26,6 +26,7 @@
                                     <th>@localizer["Adres"]</th>
                                     <th>@localizer["Oluşturulma Tarihi"]</th>
                                     <th>@localizer["Sms Gönder"]</th>
+                                    <th>@localizer["Mail Gönder"]</th>
                                     <th>@localizer["Güncelle"]</th>
                                     <th>@localizer["Sil"]</th>
                                 </tr>
@@ -47,6 +48,9 @@
                                             <a asp-action="SendSms" asp-route-id="@customer.Id" class="btn btn-info">@localizer["Sms Gönder"]</a>
                                         </td>
                                         <td>
+                                            <a asp-action="SendMail" asp-route-id="@customer.Id" class="btn btn-info">@localizer["Mail Gönder"]</a>
+                                        </td>
+                                        <td>
                                             <a asp-action="UpdateCustomer" asp-route-id="@customer.Id" class="btn btn-info">@localizer["Güncelle"]</a>
                                         </td>
                                         <td>
@@ -66,6 +70,7 @@
                                     <th>@localizer["Adres"]</th>
                                     <th>@localizer["Oluşturulma Tarihi"]</th>
                                     <th>@localizer["Sms Gönder"]</th>
+                                    <th>@localizer["Mail Gönder"]</th>
                                     <th>@localizer["Güncelle"]</th>
                                     <th>@localizer["Sil"]</th>
                                 </tr>

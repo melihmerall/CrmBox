@@ -2,6 +2,7 @@
 using CrmBox.Application.Services.Customer;
 using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Identity;
+using CrmBox.WebUI.Helper;
 using CrmBox.WebUI.Helper.Twilio;
 using CrmBox.WebUI.Models;
 using FluentValidation.Results;
@@ -184,6 +185,38 @@ namespace CrmBox.WebUI.Controllers
 
                 ViewBag.State = false;
                 throw;
+            }
+            return View();
+        }
+        [HttpGet]
+        public IActionResult SendMail(int id)
+        {
+            var values = _customerService.GetById(id);
+
+            
+            SendMailVM model = new SendMailVM
+            {
+                Id = values.Id,
+                Mail = values.Email,
+            
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult SendMail(SendMailVM model)
+        {
+
+            var customer = _customerService.GetAll().Where(x => x.Id == model.Id).FirstOrDefault();
+            {
+                customer.Id = model.Id;
+                customer.Email = model.Mail;
+            };
+
+
+            if (ModelState.IsValid)
+            {
+                EmailHelper emailHelper = new EmailHelper();
+                emailHelper.SendEmail(model.Mail, model.Messages);
             }
             return View();
         }

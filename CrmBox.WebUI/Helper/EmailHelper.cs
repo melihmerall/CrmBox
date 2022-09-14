@@ -24,11 +24,11 @@ namespace CrmBox.WebUI.Helper
             _config = config;
         }
 
-        public bool SendEmail(string userEmail,string message)
+        public bool SendEmail(string userEmail, string message)
         {
-            
+
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(_config.GetSection("SenderMailAdress").Value);
+            mailMessage.From = new MailAddress("melih16-meral@hotmail.com");
             mailMessage.To.Add(new MailAddress(userEmail));
 
             mailMessage.Subject = "Confirm your email";
@@ -36,20 +36,15 @@ namespace CrmBox.WebUI.Helper
             mailMessage.Body = message;
 
             SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential(_config.GetSection("CredentialsUserName").Value, _config.GetSection("CredentialsPassword").Value);
-            client.Host = _config.GetSection("EmailHost").Value;
+            client.Credentials = new System.Net.NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
+            client.Host = "smtp-mail.outlook.com";
             client.Port = 587;
 
-            try
-            {
-                client.Send(mailMessage);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                // log exception
-            }
-            return false;
+
+            client.Send(mailMessage);
+            return true;
+
+
         }
 
 
@@ -105,13 +100,13 @@ namespace CrmBox.WebUI.Helper
             }
             catch (Exception ex)
             {
-                
+
                 // log exception
             }
             return false;
         }
 
-        public bool SendEmailTwoFactorCode(string userEmail, string code) 
+        public bool SendEmailTwoFactorCode(string userEmail, string code)
         {
             MailMessage mailMessage = new MailMessage();
             mailMessage.From = new MailAddress("melih16.meral@hotmail.com");
@@ -126,7 +121,7 @@ namespace CrmBox.WebUI.Helper
             client.Host = "smtp-mail.outlook.com";
             client.Port = 587;
 
-          
+
 
             try
             {
