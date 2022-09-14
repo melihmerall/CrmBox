@@ -21,6 +21,7 @@ namespace CrmBox.Application.Services.Chat
             _roomInfo[id] = new ChatRoom
             {
                 OwnerConnectionId = connectionId
+                
             };
             return Task.FromResult(id);
         }

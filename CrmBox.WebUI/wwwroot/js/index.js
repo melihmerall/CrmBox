@@ -2,6 +2,7 @@
 
 var chatterName = 'Visitor';
 
+
 var dialogEl = document.getElementById('chatDialog');
 
 // Initialize the SignalR client
@@ -75,8 +76,6 @@ function ready() {
         }
     });
 }
-
-
 function renderMessage(name, time, message) {
     var nameSpan = document.createElement('span');
     nameSpan.className = 'name';

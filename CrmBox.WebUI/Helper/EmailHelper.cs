@@ -64,8 +64,8 @@ namespace CrmBox.WebUI.Helper
             mailMessage.Body = confirmationLink;
 
             SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
-            client.Host = "smtp-mail.outlook.com";
+            client.Credentials = new System.Net.NetworkCredential(_config.GetSection("CredentialsUserName").Value, _config.GetSection("CredentialsPassword").Value);
+            client.Host = _config.GetSection("EmailHost").Value;
             client.Port = 587;
 
             try

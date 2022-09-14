@@ -31,8 +31,6 @@ namespace CrmBox.WebUI.Hubs
                 await base.OnConnectedAsync();
                 return;
             }
-
-
             var roomId = await _chatRoomService.CreateRoom(
                 Context.ConnectionId);
 
@@ -82,6 +80,7 @@ namespace CrmBox.WebUI.Hubs
         public async Task SetName(string visitorName)
         {
             var roomName = $"Müşteri Adı: {visitorName}";
+            
 
             var roomId = await _chatRoomService.GetRoomForConnectionId(
                 Context.ConnectionId);

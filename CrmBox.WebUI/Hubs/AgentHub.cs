@@ -44,7 +44,6 @@ namespace CrmBox.WebUI.Hubs
                     message.SentDT,
                     message.Text);
         }
-
         public async Task LoadHistory(Guid roomId)
         {
             var history = await _chatRoomService
