@@ -27,9 +27,9 @@ namespace CrmBox.WebUI.Hubs
             var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!String.IsNullOrEmpty(UserId))
             {
-                var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected", UserId, userName);
-                HubConnections.AddUserConnection(UserId, Context.ConnectionId);
+                //var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+                //Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected", UserId, userName);
+                //HubConnections.AddUserConnection(UserId, Context.ConnectionId);
             }
             return base.OnConnectedAsync();
         }
@@ -39,28 +39,28 @@ namespace CrmBox.WebUI.Hubs
             await Clients.All.SendAsync("receiveMessages", message);
         }
 
-        public override Task OnDisconnectedAsync(Exception? exception)
-        {
-            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //public override Task OnDisconnectedAsync(Exception? exception)
+        //{
+        //    var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
-            {
-                var UserConnections = HubConnections.Users[UserId];
-                UserConnections.Remove(Context.ConnectionId);
+        //    //if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
+        //    //{
+        //    //    var UserConnections = HubConnections.Users[UserId];
+        //    //    UserConnections.Remove(Context.ConnectionId);
 
-                HubConnections.Users.Remove(UserId);
-                if (UserConnections.Any())
-                    HubConnections.Users.Add(UserId, UserConnections);
-            }
+        //    //    HubConnections.Users.Remove(UserId);
+        //    //    if (UserConnections.Any())
+        //    //        HubConnections.Users.Add(UserId, UserConnections);
+        //    //}
 
-            if (!String.IsNullOrEmpty(UserId))
-            {
-                var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
-                HubConnections.AddUserConnection(UserId, Context.ConnectionId);
-            }
-            return base.OnDisconnectedAsync(exception);
-        }
+        //    //if (!String.IsNullOrEmpty(UserId))
+        //    //{
+        //    //    var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+        //    //    Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
+        //    //    HubConnections.AddUserConnection(UserId, Context.ConnectionId);
+        //    }
+        //    return base.OnDisconnectedAsync(exception);
+        //}
 
         public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
         {

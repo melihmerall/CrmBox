@@ -26,27 +26,30 @@ namespace CrmBox.WebUI.Helper
 
         public bool SendEmail(string userEmail,string message)
         {
-            
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(_config.GetSection("SenderMailAdress").Value);
-            mailMessage.To.Add(new MailAddress(userEmail));
 
-            mailMessage.Subject = "Confirm your email";
-            mailMessage.IsBodyHtml = true;
-            mailMessage.Body = message;
+            MailMessage mail = new MailMessage();
+            mail.IsBodyHtml = true;
+            mail.To.Add(new MailAddress(userEmail));
+            mail.From = new MailAddress("melih16-meral@hotmail.com", "Şifre Güncelleme", System.Text.Encoding.UTF8);
+            mail.Subject = "Yeni Mesaj - CrmBox";
+            mail.Body = message;
+            mail.IsBodyHtml = true;
 
-            SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential(_config.GetSection("CredentialsUserName").Value, _config.GetSection("CredentialsPassword").Value);
-            client.Host = _config.GetSection("EmailHost").Value;
-            client.Port = 587;
-
+            SmtpClient smp = new SmtpClient();
+            smp.UseDefaultCredentials = false;
+            smp.Credentials = new NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
+            smp.Port = 587;
+            smp.Host = "smtp-mail.outlook.com";
+            smp.EnableSsl = true;
+            smp.Send(mail);
             try
             {
-                client.Send(mailMessage);
+                smp.Send(mail);
                 return true;
             }
             catch (Exception ex)
             {
+
                 // log exception
             }
             return false;
