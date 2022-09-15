@@ -215,7 +215,7 @@ namespace CrmBox.WebUI.Controllers
                     {
 
                         EmailHelper emailHelper = new EmailHelper();
-                        emailHelper.SendEmail(model.Mail, model.Messages);
+                        emailHelper.SendEmail(model.Mail, model.Messages,model.Subject);
                         ViewBag.State = true;
                     }
                     catch (Exception ex)

@@ -24,7 +24,7 @@ namespace CrmBox.WebUI.Helper
             _config = config;
         }
 
-        public bool SendEmail(string userEmail, string message)
+        public bool SendEmail(string userEmail, string message,string subject)
         {
 
             MailMessage mailMessage = new MailMessage();
@@ -32,7 +32,7 @@ namespace CrmBox.WebUI.Helper
             mailMessage.From = new MailAddress("melih16-meral@hotmail.com", "Şifre Güncelleme", System.Text.Encoding.UTF8);
             mailMessage.To.Add(userEmail);
 
-            mailMessage.Subject = "Confirm your email";
+            mailMessage.Subject = subject;
             mailMessage.IsBodyHtml = true;
             mailMessage.Body = message;
 
