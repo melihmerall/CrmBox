@@ -11,6 +11,12 @@
 
             <div class="card-body" style="display: block;">
                 <div class="form-group">
+                    <label asp-for="Subject">@localizer["Konu"]</label>
+                    <input asp-for="Subject" placeholder="@localizer["Konu"]" type="text" class="form-control" />
+                    <span class="bg-danger" asp-validation-for="Subject"></span>
+                </div>
+
+                <div class="form-group">
                     <label asp-for="Messages">@localizer["Mesaj"]</label>
                     <input asp-for="Messages" placeholder="@localizer["Mesaj"]" type="text" class="form-control" />
                     <span class="bg-danger" asp-validation-for="Messages"></span>
@@ -19,8 +25,8 @@
 
                 <div class="form-group">
                     <label asp-for="Mail">@localizer["Mail Adresi"]</label>
-                    <input asp-for="Mail"  placeholder="@localizer["Mail Adresi"]" type="text" class="form-control" />
-                    <span class="bg-danger"  asp-validation-for="Mail"></span>
+                    <input asp-for="Mail" placeholder="@localizer["Mail Adresi"]" type="text" class="form-control" />
+                    <span class="bg-danger" asp-validation-for="Mail"></span>
                 </div>
             </div>
             <div class="card-footer">
@@ -33,11 +39,11 @@
         </div>
         @if (ViewBag.State == true)
         {
-                        <span class="bg-success">@localizer["Mail Gönderme İşlemi Başarılı"]</span>
+            <span class="bg-success">@localizer["Mail Gönderme İşlemi Başarılı"]</span>
         }
         else if (ViewBag.State == false)
         {
-                        <span class="bg-danger">@localizer["Mail Gönderme İşlemi Başarısız"]</span>
+            <span class="bg-danger">@localizer["Mail Gönderme İşlemi Başarısız"]</span>
         }
     </div>
 </form>
