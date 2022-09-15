@@ -29,7 +29,7 @@ namespace CrmBox.WebUI.Helper
 
             MailMessage mailMessage = new MailMessage();
             mailMessage.IsBodyHtml = true;
-            mailMessage.From = new MailAddress("melih16-meral@hotmail.com", "Şifre Güncelleme", System.Text.Encoding.UTF8);
+            mailMessage.From = new MailAddress("melih16-meral@hotmail.com");
             mailMessage.To.Add(userEmail);
 
             mailMessage.Subject = "Confirm your email";

@@ -14,13 +14,13 @@ namespace CrmBox.WebUI.Hubs
 {
     public class ChatHub : Hub
     {
-        public readonly static List<UserProfileVM> _Connections = new List<UserProfileVM>();
+        //public readonly static List<UserProfileVM> _Connections = new List<UserProfileVM>();
 
-        private readonly CrmBoxIdentityContext _db;
-        public ChatHub(CrmBoxIdentityContext db)
-        {
-            _db = db;
-        }
+        //private readonly CrmBoxIdentityContext _db;
+        //public ChatHub(CrmBoxIdentityContext db)
+        //{
+        //    _db = db;
+        //}
 
         public override Task OnConnectedAsync()
         {
@@ -34,42 +34,43 @@ namespace CrmBox.WebUI.Hubs
             return base.OnConnectedAsync();
         }
 
-        public async  Task SendMessageAsync(string message)
+        public async Task SendMessageAsync(string message)
         {
             await Clients.All.SendAsync("receiveMessages", message);
         }
 
-        //public override Task OnDisconnectedAsync(Exception? exception)
-        //{
-        //    var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    //public override Task OnDisconnectedAsync(Exception? exception)
+        //    //{
+        //    //    var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
-            //{
-            //    var UserConnections = HubConnections.Users[UserId];
-            //    UserConnections.Remove(Context.ConnectionId);
+        //        //if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
+        //        //{
+        //        //    var UserConnections = HubConnections.Users[UserId];
+        //        //    UserConnections.Remove(Context.ConnectionId);
 
-            //    HubConnections.Users.Remove(UserId);
-            //    if (UserConnections.Any())
-            //        HubConnections.Users.Add(UserId, UserConnections);
-            //}
+        //        //    HubConnections.Users.Remove(UserId);
+        //        //    if (UserConnections.Any())
+        //        //        HubConnections.Users.Add(UserId, UserConnections);
+        //        //}
 
-            //if (!String.IsNullOrEmpty(UserId))
-            //{
-            //    var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-            //    Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
-            //    HubConnections.AddUserConnection(UserId, Context.ConnectionId);
-            //}
-            return base.OnDisconnectedAsync(exception);
-        }
+        //        //if (!String.IsNullOrEmpty(UserId))
+        //        //{
+        //        //    var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
+        //        //    Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
+        //        //    HubConnections.AddUserConnection(UserId, Context.ConnectionId);
+        //        //}
+        //        return base.OnDisconnectedAsync(exception);
+        //}
 
         public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
         {
-            var senderId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var senderName = _db.Users.FirstOrDefault(u => u.Id.ToString() == senderId).UserName;
-            _db.Add(message);
-            var users = new string[] { senderId, receiverId };
+            //var senderId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var senderName = _db.Users.FirstOrDefault(u => u.Id.ToString() == senderId).UserName;
+            //_db.Add(message);
+            //var users = new string[] { senderId, receiverId };
 
-            await Clients.Users(users).SendAsync("ReceivePrivateMessage", senderId, senderName, receiverId, message, Guid.NewGuid(), receiverName);
+            //await Clients.Users(users).SendAsync("ReceivePrivateMessage", senderId, senderName, receiverId, message,
+            //    Guid.NewGuid(), receiverName);
         }
 
         public async Task SendOpenPrivateChat(string receiverId)
@@ -89,7 +90,7 @@ namespace CrmBox.WebUI.Hubs
         {
             await Clients.All.SendAsync("MessageReceived", user, message);
         }
-        
+
         //public async Task SendMessageToReceiver(string sender, string receiver, string message)
         //{
         //    var userId = _db.Users.FirstOrDefault(u => u.Email.ToLower() == receiver.ToLower()).Id;
@@ -102,8 +103,8 @@ namespace CrmBox.WebUI.Hubs
         //}
 
     }
-
 }
+
 
 
 
