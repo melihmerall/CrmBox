@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Autofac;
 using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
@@ -25,6 +26,10 @@ using CrmBox.WebUI.Hubs;
 using Microsoft.AspNetCore.Http.Features;
 using CrmBox.WebUI.Helper.Twilio;
 using CrmBox.WebUI.Helper;
+using Microsoft.AspNetCore.HttpLogging;
+using Serilog.Context;
+using Serilog.Core;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 var provider = builder.Services.BuildServiceProvider();
@@ -54,10 +59,44 @@ builder.Services.AddControllers().AddFluentValidation(configuration => configura
 
 
 //Add Serilog
-Log.Logger = new LoggerConfiguration().CreateLogger();
-builder.Host.UseSerilog(((ctx, lc) => lc
-    .ReadFrom.Configuration(ctx.Configuration)
-    .WriteTo.Console()));
+SqlColumn sqlColumn = new SqlColumn();
+sqlColumn.ColumnName = "UserName";
+sqlColumn.DataType = System.Data.SqlDbType.NVarChar;
+sqlColumn.PropertyName = "UserName";
+sqlColumn.DataLength = 50;
+sqlColumn.AllowNull = true;
+ColumnOptions columnOpt = new ColumnOptions();
+columnOpt.Store.Remove(StandardColumn.Properties);
+columnOpt.Store.Add(StandardColumn.LogEvent);
+columnOpt.AdditionalColumns = new Collection<SqlColumn> { sqlColumn };
+Logger log = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt")
+    .WriteTo.MSSqlServer(
+        connectionString: builder.Configuration.GetConnectionString("Log"),
+        sinkOptions: new MSSqlServerSinkOptions
+        {
+            AutoCreateSqlTable = true,
+            TableName = "testlog",
+        },
+        appConfiguration: null,
+        columnOptions: columnOpt
+    )
+    .Enrich.FromLogContext()
+    .MinimumLevel.Information()
+    .CreateLogger();
+builder.Host.UseSerilog(log);
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("sec-ch-ua");
+    logging.MediaTypeOptions.AddText("application/javascript");
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
+
+
+
 
 //Add DbContext
 builder.Services.AddDbContext<CrmBoxIdentityContext>();
@@ -221,6 +260,8 @@ if (!app.Environment.IsDevelopment())
 
 
 
+
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -235,7 +276,13 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.UseRequestLocalization(((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-
+app.Use(async (httpContext, next) =>
+    {
+        var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; //Gets user Name from user Identity  
+        LogContext.PushProperty("UserName", userName); //Push user in LogContext;  
+        await next.Invoke();
+    }
+);
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");

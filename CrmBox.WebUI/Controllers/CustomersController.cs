@@ -24,17 +24,20 @@ namespace CrmBox.WebUI.Controllers
         IMemoryCache _memoryCache;
         readonly TwilioSettings _twilioOptions;
         const string cacheKey = "customerKey";
-        public CustomersController(ICustomerService customerService, IMemoryCache memoryCache, IOptions<TwilioSettings> twilioOptions)
+        ILogger<CustomersController> _logger;
+        public CustomersController(ICustomerService customerService, IMemoryCache memoryCache, IOptions<TwilioSettings> twilioOptions, ILogger<CustomersController> logger)
         {
             _customerService = customerService;
             _memoryCache = memoryCache;
             _twilioOptions = twilioOptions.Value;
+            _logger = logger;
         }
 
         [HttpGet]
         [Authorize(Policy = "GetAllCustomers")]
         public IActionResult GetAllCustomers()
         {
+            _logger.LogInformation("Müşteriler listelendi.");
             IQueryable<Customer> result = _customerService.GetAll();
             if (!_memoryCache.TryGetValue(cacheKey, out object list))
             {
@@ -62,6 +65,7 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "AddCustomer")]
         public async Task<IActionResult> AddCustomer(AddCustomerVM model)
         {
+           
             if (ModelState.IsValid)
             {
                 Customer customer = new Customer
@@ -77,8 +81,7 @@ namespace CrmBox.WebUI.Controllers
                 };
 
                 await _customerService.AddAsync(customer);
-
-
+                _logger.LogInformation("Müşteri eklendi.");
                 return RedirectToAction("GetAllCustomers");
 
             }
@@ -89,6 +92,7 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "UpdateCustomer")]
         public IActionResult UpdateCustomer(int id)
         {
+
             var values = _customerService.GetById(id);
             AddCustomerVM model = new AddCustomerVM
             {
@@ -108,7 +112,8 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "UpdateCustomer")]
         public IActionResult UpdateCustomer(AddCustomerVM model)
         {
-            var values = _customerService.GetById(model.Id);
+            
+                var values = _customerService.GetById(model.Id);
             {
                 values.Address = model.Address;
                 values.CompanyName = model.CompanyName;
@@ -124,7 +129,7 @@ namespace CrmBox.WebUI.Controllers
             {
                 _customerService.Update(values);
                 return RedirectToAction("GetAllCustomers");
-
+                _logger.LogInformation("Müşteri güncellendi.");
 
             }
             return View();
@@ -136,7 +141,9 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "DeleteCustomer")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
+            
             await _customerService.DeleteAsync(id);
+            _logger.LogInformation("Müşteri silindi.");
             return RedirectToAction("GetAllCustomers");
         }
 
@@ -160,6 +167,7 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "SendSms")]
         public async Task<IActionResult> SendSms(SendSmsVM vm)
         {
+            _logger.LogInformation("Sms gönderme isteği yapıldı");
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
             var values = _customerService.GetAll().Where(x => x.Id == vm.Id).FirstOrDefault();
             {
@@ -182,7 +190,7 @@ namespace CrmBox.WebUI.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(ex.Message);
                 ViewBag.State = false;
                 throw;
             }
@@ -206,6 +214,8 @@ namespace CrmBox.WebUI.Controllers
         [HttpPost]
         public IActionResult SendMail(SendMailVM model)
         {
+            _logger.LogInformation("Müşteri mail isteği yapıldı.");
+
             if (ModelState.IsValid)
             {
                 Customer customer = _customerService.GetAll().Where(x => x.Id == model.Id).FirstOrDefault();
@@ -213,14 +223,14 @@ namespace CrmBox.WebUI.Controllers
                 {
                     try
                     {
-
                         EmailHelper emailHelper = new EmailHelper();
                         emailHelper.SendEmail(model.Mail, model.Messages);
                         ViewBag.State = true;
+                        _logger.LogInformation("Müşteri mail gönderildi.");
                     }
                     catch (Exception ex)
                     {
-
+                        _logger.LogError(ex.Message);
                         ViewBag.State = false;
                         throw;
                     }
