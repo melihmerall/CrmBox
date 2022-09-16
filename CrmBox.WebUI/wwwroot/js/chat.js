@@ -27,11 +27,6 @@ connection.on("receiveMessage", message => (
 function sendMessage() {
     let inputMsg = document.getElementById("txtMessageBox");
 
-    var message = inputMsg.value;
-    connection.invoke("SendMessageAsync", message);
-    
-}
-
 
 function sendPrivateMessage() {
     let inputMsg = document.getElementById('txtPrivateMessage');
@@ -135,7 +130,7 @@ function addMessage(msg) {
         let li = document.createElement("li");
         li.innerHTML = msg;
         ui.appendChild(li);
-}
+    }
 
 
 

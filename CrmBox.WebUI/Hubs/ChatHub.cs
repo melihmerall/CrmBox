@@ -9,98 +9,110 @@ using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using CrmBox.Application.Interfaces.Chat;
 
 namespace CrmBox.WebUI.Hubs
 {
     public class ChatHub : Hub
     {
-        //public readonly static List<UserProfileVM> _Connections = new List<UserProfileVM>();
+        private readonly IChatRoomService _chatRoomService;
+        private readonly IHubContext<AgentHub> _agentHub;
 
-        //private readonly CrmBoxIdentityContext _db;
-        //public ChatHub(CrmBoxIdentityContext db)
-        //{
-        //    _db = db;
-        //}
-
-        public override Task OnConnectedAsync()
+        public ChatHub(IChatRoomService chatRoomService, IHubContext<AgentHub> agentHub)
         {
-            //var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //if (!String.IsNullOrEmpty(UserId))
-            //{
-            //    var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-            //    Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected", UserId, userName);
-            //    HubConnections.AddUserConnection(UserId, Context.ConnectionId);
-            //}
-            return base.OnConnectedAsync();
+            _chatRoomService = chatRoomService;
+            _agentHub = agentHub;
         }
 
-        public async Task SendMessageAsync(string message)
+        public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("receiveMessages", message);
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                await base.OnConnectedAsync();
+                return;
+            }
+            var roomId = await _chatRoomService.CreateRoom(
+                Context.ConnectionId);
+
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId,roomId.ToString());
+
+            await Clients.Caller.SendAsync(
+                "ReceiveMessage",
+                "Müşteri Destek Sistemi",
+                DateTimeOffset.UtcNow,
+                "Merhaba, Nasıl Yardımcı Olabilirim ?");
+
+            await base.OnConnectedAsync();
         }
 
-        //    //public override Task OnDisconnectedAsync(Exception? exception)
-        //    //{
-        //    //    var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //        //if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
-        //        //{
-        //        //    var UserConnections = HubConnections.Users[UserId];
-        //        //    UserConnections.Remove(Context.ConnectionId);
-
-        //        //    HubConnections.Users.Remove(UserId);
-        //        //    if (UserConnections.Any())
-        //        //        HubConnections.Users.Add(UserId, UserConnections);
-        //        //}
-
-        //        //if (!String.IsNullOrEmpty(UserId))
-        //        //{
-        //        //    var userName = _db.Users.FirstOrDefault(u => u.Id.ToString() == UserId).UserName;
-        //        //    Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
-        //        //    HubConnections.AddUserConnection(UserId, Context.ConnectionId);
-        //        //}
-        //        return base.OnDisconnectedAsync(exception);
-        //}
-
-        public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
-            //var senderId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //var senderName = _db.Users.FirstOrDefault(u => u.Id.ToString() == senderId).UserName;
-            //_db.Add(message);
-            //var users = new string[] { senderId, receiverId };
-
-            //await Clients.Users(users).SendAsync("ReceivePrivateMessage", senderId, senderName, receiverId, message,
-            //    Guid.NewGuid(), receiverName);
+            return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendOpenPrivateChat(string receiverId)
+        public async Task SendMessage(string name, string text)
         {
-            var username = Context.User.FindFirstValue(ClaimTypes.Name);
-            var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await Clients.User(receiverId).SendAsync("ReceiveOpenPrivateChat", userId, username);
+            var roomId = await
+                _chatRoomService.GetRoomForConnectionId(
+                    Context.ConnectionId);
+
+
+            var message = new ChatMessage()
+            {
+                SenderName = name,
+                Text = text,
+                SentDT = DateTimeOffset.UtcNow
+            };
+            await _chatRoomService.AddMessage(roomId, message);
+
+
+
+            // Broadcast to all clients
+            await Clients.Group(roomId.ToString()).SendAsync(
+                "ReceiveMessage",
+                message.SenderName,
+                message.SentDT,
+                message.Text);
         }
 
-        public async Task SendDeletePrivateChat(string chartId)
+        public async Task SetName(string visitorName)
         {
-            await Clients.All.SendAsync("ReceiveDeletePrivateChat", chartId);
+            var roomName = $"Müşteri Adı: {visitorName}";
+            
+
+            var roomId = await _chatRoomService.GetRoomForConnectionId(
+                Context.ConnectionId);
+
+            await _chatRoomService.SetRoomName(roomId, roomName);
+
+            await _agentHub.Clients.All
+                .SendAsync(
+                    "ActiveRooms",
+                    await _chatRoomService.GetAllRooms());
         }
 
-        public async Task SendMessageToAll(string user, string message)
+        public async Task JoinRoom(Guid roomId)
         {
-            await Clients.All.SendAsync("MessageReceived", user, message);
+            if (roomId == Guid.Empty)
+            {
+                throw new ArgumentException("invalid id");
+            }
+
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId, roomId.ToString());
         }
+        public async Task LeaveRoom(Guid roomId)
+        {
+            if (roomId == Guid.Empty)
+            {
+                throw new ArgumentException("invalid id");
+            }
 
-        //public async Task SendMessageToReceiver(string sender, string receiver, string message)
-        //{
-        //    var userId = _db.Users.FirstOrDefault(u => u.Email.ToLower() == receiver.ToLower()).Id;
-
-        //    if (!string.IsNullOrEmpty(userId))
-        //    {
-        //        await Clients.User(userId).SendAsync("MessageReceived", sender, message);
-        //    }
-
-        //}
+            await Groups.RemoveFromGroupAsync(
+                Context.ConnectionId, roomId.ToString());
+        }
 
     }
 }

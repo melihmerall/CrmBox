@@ -1,22 +1,20 @@
-﻿@page
-@model CrmBox.WebUI.Models.SupportAgentModel
+﻿
+@model ExploreCalifornia.Pages.SupportAgentModel
 @{
     ViewData["Title"] = "Support agent dashboard";
     ViewData["Subtitle"] = "Connect with customers and answer questions live.";
 }
 @section Scripts {
 
+
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/lib/jquery/dist/jquery.js"></script>
+
     <script src="~/js/agent.js"></script>
 }
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
 <link rel="stylesheet" href="~/css/agent.css" />
 
-<div class="jumbotron">
-    <h1 class="display-4">@ViewData["Title"]</h1>
-    <p class="lead">@ViewData["Subtitle"]</p>
-</div>
+
 
 <div class="container">
     <div class="row">

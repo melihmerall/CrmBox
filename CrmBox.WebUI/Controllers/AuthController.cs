@@ -55,9 +55,7 @@ namespace CrmBox.WebUI.Controllers
                     await _userManager.AddToRoleAsync(rootUser, "Root");
                     await _userManager.AddClaimsAsync(rootUser, claims );
                 }
-            
             }
-            
             return View();
         }
 
@@ -68,8 +66,6 @@ namespace CrmBox.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
-
-
 
                 if (result.Succeeded)
                 {
@@ -121,9 +117,9 @@ namespace CrmBox.WebUI.Controllers
                 AppUser user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-
                     var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var link = $"<a target=\"_blank\" href=\"https://localhost:44300{Url.Action("UpdatePassword", "Auth", new { userId = user.Id, token = HttpUtility.UrlEncode(resetToken) })}\">Yeni şifre talebi için tıklayınız</a>"; EmailHelper emailHelper = new EmailHelper();
+                    var link = $"<a target=\"_blank\" href=\"https://localhost:7001{Url.Action("UpdatePassword", "Auth", new { userId = user.Id, token = HttpUtility.UrlEncode(resetToken) })}\">Yeni şifre talebi için tıklayınız</a>";
+                    EmailHelper emailHelper = new EmailHelper();
                     emailHelper.SendEmailPasswordReset(model.Email, link);
                     ViewBag.State = true;
                 }

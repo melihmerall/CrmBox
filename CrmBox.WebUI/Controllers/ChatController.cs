@@ -25,24 +25,16 @@ namespace CrmBox.WebUI.Controllers
         {
             return View();
         }
+        [Authorize(Policy = "CustomerChatSupport")]
+        public IActionResult SupportAgent()
+        {
+            return View();
+        }
+
         public IActionResult UserCount()
         {
             return View();
         }
-        [Authorize(Policy ="Chat")]
-        public IActionResult Chat()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userName = _userManager.Users.FirstOrDefault(x=>x.Id.ToString()==userId).UserName;
-            ChatVM chatVm = new()
-            {
-                
-                UserId = userId,
-            };
-            ViewBag.userName = userName;
-            return View(chatVm);
-        }
-
 
     }
 }
