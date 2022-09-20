@@ -25,13 +25,15 @@ namespace CrmBox.WebUI.Controllers
         readonly SignInManager<AppUser> _signInManager;
         readonly UserManager<AppUser> _userManager;
         readonly RoleManager<AppRole> _roleManager;
+        private readonly ILogger<AuthController> _logger;
 
 
-        public AuthController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        public AuthController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, ILogger<AuthController> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
 
@@ -70,9 +72,9 @@ namespace CrmBox.WebUI.Controllers
                 var result = await _signInManager.PasswordSignInAsync(vM.Username, vM.Password, false, false);
 
 
-
                 if (result.Succeeded)
                 {
+
                     // Giriş yapan kullanıcının Rolünü session ile viewwde göstermeyi tercih ettim. Viewbag da kullanılabilir.
                     var findUser = _userManager.Users.FirstOrDefault(x => x.UserName == vM.Username);
                     var roleNameVB = await _userManager.GetRolesAsync(findUser);
@@ -81,11 +83,12 @@ namespace CrmBox.WebUI.Controllers
                     ViewBag.userPass = findUser.Password;
                     HttpContext.Session.SetString("username", vM.Username);
                     ViewBag.State = true;
-
+                    _logger.LogInformation(findUser.FirstName+" "+findUser.LastName+" adlı kullanıcı sisteme giriş yaptı.");
                     return RedirectToAction("GetAllCustomers", "Customers");
                 }
                 else
                 {
+                    _logger.LogError("Başarısız giriş.");
                     ViewBag.State = false;
                     
                 }
@@ -126,6 +129,7 @@ namespace CrmBox.WebUI.Controllers
                     var link = $"<a target=\"_blank\" href=\"https://localhost:44300{Url.Action("UpdatePassword", "Auth", new { userId = user.Id, token = HttpUtility.UrlEncode(resetToken) })}\">Yeni şifre talebi için tıklayınız</a>"; EmailHelper emailHelper = new EmailHelper();
                     emailHelper.SendEmailPasswordReset(model.Email, link);
                     ViewBag.State = true;
+                    _logger.LogInformation("Şifre yenileme maili gönderildi.");
                 }
                 else { ViewBag.State = false; }
 
@@ -149,6 +153,7 @@ namespace CrmBox.WebUI.Controllers
                 {
                     ViewBag.State = true;
                     await _userManager.UpdateSecurityStampAsync(user);
+                    _logger.LogInformation(user.Email+ " e posta adresine sahip kullanıcı şifresini değiştirdi.");
                 }
                 else
                     ViewBag.State = false;

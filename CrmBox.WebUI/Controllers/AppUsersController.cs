@@ -20,24 +20,21 @@ namespace CrmBox.WebUI.Controllers
         readonly SignInManager<AppUser> _signInManager;
         IMemoryCache _memoryCache;
         const string cacheKey = "customerKey";
-        public AppUsersController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMemoryCache memoryCache)
+        private readonly ILogger<AppUsersController> _logger;
+        public AppUsersController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMemoryCache memoryCache, ILogger<AppUsersController> logger)
 
         {
             _userManager = userManager;
-
             _signInManager = signInManager;
             _memoryCache = memoryCache;
+            _logger = logger;
         }
 
         [HttpGet]
         [Authorize(Policy = "GetAllUsers")]
         public IActionResult GetAllUsers()
         {
-
-            
-
             var users = _userManager.Users.ToList();
-            
 
             if (!_memoryCache.TryGetValue(cacheKey, out object list))
             {
@@ -50,6 +47,7 @@ namespace CrmBox.WebUI.Controllers
 
                 _memoryCache.Set(cacheKey, users, cacheExpOptions);
             }
+            _logger.LogInformation("User lar listelendi.");
             return View(users);
         }
 
@@ -65,22 +63,30 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "AddUser")]
         public async Task<IActionResult> AddUser(AddUserVM model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                AppUser appUser = new AppUser
+                if (ModelState.IsValid)
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    UserName = model.UserName,
-                    Email = model.Email,
-                    Password = model.Password,
-                };
+                    AppUser appUser = new AppUser
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        Password = model.Password,
+                    };
 
-                var result =  await _userManager.CreateAsync(appUser, model.Password);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("GetAllUsers");
+                    var result = await _userManager.CreateAsync(appUser, model.Password);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("Yeni user eklendi.");
+                        return RedirectToAction("GetAllUsers");
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
             }
             return View();
         }
@@ -121,7 +127,7 @@ namespace CrmBox.WebUI.Controllers
                 IdentityResult result = await _userManager.UpdateAsync(values);
                 if (result.Succeeded)
                 {
-
+                    _logger.LogInformation(values.FirstName+ " "+ values.LastName + "adlı user güncellendi.");
                     return RedirectToAction("GetAllUsers");
                 }
 
@@ -134,6 +140,7 @@ namespace CrmBox.WebUI.Controllers
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == Id);
             await _userManager.DeleteAsync(user);
+            _logger.LogInformation(user.FirstName + " " + user.LastName + "adlı user silindi.");
             return RedirectToAction("GetAllUsers");
         }
     }

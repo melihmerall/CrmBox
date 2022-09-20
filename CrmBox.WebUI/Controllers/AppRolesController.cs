@@ -16,13 +16,15 @@ namespace CrmBox.WebUI.Controllers
     {
         readonly RoleManager<AppRole> _roleManager;
         readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<AppRolesController> _logger;
         IMemoryCache _memoryCache;
         const string cacheKey = "customerKey";
-        public AppRolesController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IMemoryCache memoryCache)
+        public AppRolesController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IMemoryCache memoryCache, ILogger<AppRolesController> logger)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _memoryCache = memoryCache;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -30,10 +32,7 @@ namespace CrmBox.WebUI.Controllers
         public IActionResult GetAllUserRoles()
         {
             var roles = _roleManager.Roles.ToList();
-
-
-
-
+            _logger.LogInformation("Kullanıcı rol listesi çağrıldı.");
             if (!_memoryCache.TryGetValue(cacheKey, out object list))
             {
 
@@ -62,23 +61,32 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "AddUserRole")]
         public async Task<IActionResult> AddUserRole(AddRoleVM model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                AppRole appRole = new AppRole
+                if (ModelState.IsValid)
                 {
+                    AppRole appRole = new AppRole
+                    {
 
-                    Name = model.Name,
+                        Name = model.Name,
 
 
-                };
+                    };
 
-                var result = await _roleManager.CreateAsync(appRole);
-                if (result.Succeeded)
-                {
+                    var result = await _roleManager.CreateAsync(appRole);
+                    _logger.LogInformation("Kullanı yeni rol tanımı eklendi.");
+                    if (result.Succeeded)
+                    {
 
-                    return RedirectToAction("GetAllUserRoles");
+                        return RedirectToAction("GetAllUserRoles");
+                    }
+
+
                 }
-
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
 
             }
             return View();
@@ -107,17 +115,25 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "UpdateUserRole")]
         public async Task<IActionResult> UpdateUserRole(AddRoleVM model)
         {
-            var values = _roleManager.Roles.Where(x => x.Id == model.Id).FirstOrDefault();
-            values.Name = model.Name;
-            if (ModelState.IsValid)
+            try
             {
-                var result = await _roleManager.UpdateAsync(values);
-                if (result.Succeeded)
+                var values = _roleManager.Roles.Where(x => x.Id == model.Id).FirstOrDefault();
+                values.Name = model.Name;
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction("GetAllUserRoles");
+                    var result = await _roleManager.UpdateAsync(values);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("Kullanıcı rol tanımı güncellendi.");
+                        return RedirectToAction("GetAllUserRoles");
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
 
 
@@ -131,6 +147,8 @@ namespace CrmBox.WebUI.Controllers
             var result = await _roleManager.DeleteAsync(values);
             if (result.Succeeded)
             {
+                _logger.LogInformation("Kullanıcı rol tanımı silindi.");
+
                 return RedirectToAction("GetAllUserRoles");
             }
             return View();
@@ -169,7 +187,7 @@ namespace CrmBox.WebUI.Controllers
         {
             var userId = (int)TempData["UserId"];
             var user = _userManager.Users.FirstOrDefault(x => x.Id == userId);
-
+            _logger.LogInformation("Kullanıcıya rol ekleme işlemi yapıldı.");
             foreach (var item in model)
             {
                 if (item.Exist)
@@ -209,6 +227,7 @@ namespace CrmBox.WebUI.Controllers
                 {
                     userClaim.IsSelected = true;
                 }
+                
                 model.Claims.Add(userClaim);
             }
             return View(model);
@@ -238,7 +257,7 @@ namespace CrmBox.WebUI.Controllers
 
             // Bu kısım viewde seçilenleri yakalayıp foreach ile dönerek databaseye eklemek için
             var claimss = model.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.ClaimType));
-
+            
             foreach (var claim in claimss)
             {
                 var result = await _roleManager.AddClaimAsync(role, claim);
@@ -249,6 +268,7 @@ namespace CrmBox.WebUI.Controllers
                 }
 
             }
+            _logger.LogInformation("User claim ekleme işlemi yapıldı.");
             return RedirectToAction("GetAllUserRoles", "AppRoles");
 
         }

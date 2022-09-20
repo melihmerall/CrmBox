@@ -65,25 +65,33 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "AddCustomer")]
         public async Task<IActionResult> AddCustomer(AddCustomerVM model)
         {
-           
-            if (ModelState.IsValid)
+            try
             {
-                Customer customer = new Customer
+                if (ModelState.IsValid)
                 {
-                    Address = model.Address,
-                    CompanyName = model.CompanyName,
-                    CreatedTime = DateTime.Now,
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    JobTitle = model.JobTitle,
-                    LastName = model.LastName,
-                    PhoneNumber = model.PhoneNumber,
-                };
+                    Customer customer = new Customer
+                    {
+                        Address = model.Address,
+                        CompanyName = model.CompanyName,
+                        CreatedTime = DateTime.Now,
+                        Email = model.Email,
+                        FirstName = model.FirstName,
+                        JobTitle = model.JobTitle,
+                        LastName = model.LastName,
+                        PhoneNumber = model.PhoneNumber,
+                    };
 
-                await _customerService.AddAsync(customer);
-                _logger.LogInformation("Müşteri eklendi.");
-                return RedirectToAction("GetAllCustomers");
+                    await _customerService.AddAsync(customer);
+                    _logger.LogInformation("Müşteri eklendi.");
+                    return RedirectToAction("GetAllCustomers");
 
+                }
+               
+            }
+            catch (Exception e)
+            {
+              
+                _logger.LogError(e.Message);
             }
             return View();
         }
@@ -112,25 +120,34 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "UpdateCustomer")]
         public IActionResult UpdateCustomer(AddCustomerVM model)
         {
-            
+            try
+            {
                 var values = _customerService.GetById(model.Id);
-            {
-                values.Address = model.Address;
-                values.CompanyName = model.CompanyName;
-                values.CreatedTime = DateTime.Now;
-                values.Email = model.Email;
-                values.FirstName = model.FirstName;
-                values.JobTitle = model.JobTitle;
-                values.LastName = model.LastName;
-                values.PhoneNumber = model.PhoneNumber;
+                {
+                    values.Address = model.Address;
+                    values.CompanyName = model.CompanyName;
+                    values.CreatedTime = DateTime.Now;
+                    values.Email = model.Email;
+                    values.FirstName = model.FirstName;
+                    values.JobTitle = model.JobTitle;
+                    values.LastName = model.LastName;
+                    values.PhoneNumber = model.PhoneNumber;
 
-            };
-            if (ModelState.IsValid)
-            {
-                _customerService.Update(values);
-                return RedirectToAction("GetAllCustomers");
-                _logger.LogInformation("Müşteri güncellendi.");
+                };
+                if (ModelState.IsValid)
+                {
+                    _customerService.Update(values);
+                    _logger.LogInformation("Müşteri güncellendi.");
+                    return RedirectToAction("GetAllCustomers");
 
+
+                }
+            }
+           
+            catch (Exception e)
+            {
+                
+                _logger.LogError(e.Message);
             }
             return View();
 
@@ -141,7 +158,7 @@ namespace CrmBox.WebUI.Controllers
         [Authorize(Policy = "DeleteCustomer")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
-            
+
             await _customerService.DeleteAsync(id);
             _logger.LogInformation("Müşteri silindi.");
             return RedirectToAction("GetAllCustomers");
@@ -235,7 +252,7 @@ namespace CrmBox.WebUI.Controllers
                         throw;
                     }
                 }
-                
+
             }
             return View();
         }
