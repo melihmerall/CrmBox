@@ -40,12 +40,15 @@ namespace CrmBox.Application.Services.Chat
             return Task.FromResult(foundRoom.Key);
         }
 
-        public Task SetRoomName(Guid roomId, string name)
+
+        public Task SetRoomName(Guid roomId, string name,string department,string mail)
         {
             if (!_roomInfo.ContainsKey(roomId))
                 throw new ArgumentException("Invalid room Id");
 
             _roomInfo[roomId].Name = name;
+            _roomInfo[roomId].Department = department;
+            _roomInfo[roomId].Mail = mail;
             return Task.CompletedTask;
         }
 

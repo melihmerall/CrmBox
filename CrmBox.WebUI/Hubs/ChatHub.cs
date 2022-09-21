@@ -77,15 +77,18 @@ namespace CrmBox.WebUI.Hubs
                 message.Text);
         }
 
-        public async Task SetName(string visitorName)
+        public async Task SetName(string visitorName,string visitorDepartment,string visitorMail)
         {
-            var roomName = $"Müşteri Adı: {visitorName}";
-            
+            var roomName = $"{visitorName}";
+            var roomDepartment = $"{visitorDepartment}";
+            var roomMail = $"{visitorMail}";
+
+
 
             var roomId = await _chatRoomService.GetRoomForConnectionId(
                 Context.ConnectionId);
 
-            await _chatRoomService.SetRoomName(roomId, roomName);
+            await _chatRoomService.SetRoomName(roomId, roomName,roomDepartment, roomMail);
 
             await _agentHub.Clients.All
                 .SendAsync(

@@ -123,7 +123,7 @@ function createRoomButton(id, roomInfo) {
     var anchorEl = document.createElement('a');
     anchorEl.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
     anchorEl.setAttribute('data-id', id);
-    anchorEl.textContent = roomInfo.name;
+    anchorEl.innerHTML = roomInfo.name + '<br/> ' + roomInfo.department + '<br/>' + roomInfo.mail;
     anchorEl.href = '#';
 
     return anchorEl;

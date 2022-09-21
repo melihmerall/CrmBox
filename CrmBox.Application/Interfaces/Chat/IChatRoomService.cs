@@ -13,7 +13,7 @@ namespace CrmBox.Application.Interfaces.Chat
 
         Task<Guid> GetRoomForConnectionId(string connectionId);
 
-        Task SetRoomName(Guid roomId, string name);
+        Task SetRoomName(Guid roomId, string name,string department,string mail);
 
         Task AddMessage(Guid roomId, ChatMessage message);
 

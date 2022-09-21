@@ -10,8 +10,8 @@ namespace CrmBox.Persistance.Context;
 public class CrmBoxIdentityContext : IdentityDbContext<AppUser, AppRole, int>
 {
     readonly IConfiguration _configuration;
-    public DbSet<ChatRoom> Rooms { get; set; }
-    public DbSet<ChatMessage> Messages { get; set; }
+    public DbSet<ChatRoom> ChatRooms { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
     
     public CrmBoxIdentityContext(IConfiguration configuration)
     {
