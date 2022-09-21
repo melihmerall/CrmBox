@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Http.Features;
 using CrmBox.WebUI.Helper.Twilio;
 using CrmBox.WebUI.Helper;
 using CrmBox.Application.Services.Chat;
+using TwilioSettings = CrmBox.WebUI.Helper.Twilio.TwilioSettings;
 
 var builder = WebApplication.CreateBuilder(args);
 var provider = builder.Services.BuildServiceProvider();

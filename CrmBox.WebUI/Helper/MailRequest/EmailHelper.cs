@@ -24,12 +24,12 @@ namespace CrmBox.WebUI.Helper
             _config = config;
         }
 
-        public bool SendEmail(string userEmail, string message,string subject)
+        public bool SendEmail(string userEmail, string message, string subject)
         {
 
             MailMessage mailMessage = new MailMessage();
             mailMessage.IsBodyHtml = true;
-            mailMessage.From = new MailAddress("melih16-meral@hotmail.com");
+            mailMessage.From = new MailAddress("crmboxtest@hotmail.com");
             mailMessage.To.Add(userEmail);
 
             mailMessage.Subject = subject;
@@ -37,7 +37,7 @@ namespace CrmBox.WebUI.Helper
             mailMessage.Body = message;
 
             SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
+            client.Credentials = new System.Net.NetworkCredential("crmboxtest@hotmail.com", "Ablzz2w.");
             client.Host = "smtp-mail.outlook.com";
             client.Port = 587;
             client.EnableSsl = true;
@@ -81,14 +81,14 @@ namespace CrmBox.WebUI.Helper
             MailMessage mail = new MailMessage();
             mail.IsBodyHtml = true;
             mail.To.Add(new MailAddress(userEmail));
-            mail.From = new MailAddress("melih16-meral@hotmail.com", "Şifre Güncelleme", System.Text.Encoding.UTF8);
+            mail.From = new MailAddress("crmboxtest@hotmail.com", "Şifre Güncelleme", System.Text.Encoding.UTF8);
             mail.Subject = "Şifre Güncelleme Talebi - CrmBox";
             mail.Body = link;
             mail.IsBodyHtml = true;
 
             SmtpClient smp = new SmtpClient();
             smp.UseDefaultCredentials = false;
-            smp.Credentials = new NetworkCredential("melih16-meral@hotmail.com", "Ed4b122ff.");
+            smp.Credentials = new NetworkCredential("crmboxtest@hotmail.com", "Ablzz2w.");
             smp.Port = 587;
             smp.Host = "smtp-mail.outlook.com";
             smp.EnableSsl = true;
@@ -110,7 +110,7 @@ namespace CrmBox.WebUI.Helper
         public bool SendEmailTwoFactorCode(string userEmail, string code)
         {
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress("melih16.meral@hotmail.com");
+            mailMessage.From = new MailAddress("crmboxtest@hotmail.com");
             mailMessage.To.Add(new MailAddress(userEmail));
 
             mailMessage.Subject = "Two Factor Code";
@@ -118,7 +118,7 @@ namespace CrmBox.WebUI.Helper
             mailMessage.Body = code;
 
             SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("melhi16-meral@hotmail.com", "Ed4b122ff.");
+            client.Credentials = new System.Net.NetworkCredential("crmboxtest@hotmail.com", "Ablzz2w.");
             client.Host = "smtp-mail.outlook.com";
             client.Port = 587;
 
