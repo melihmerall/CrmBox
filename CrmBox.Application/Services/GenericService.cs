@@ -26,6 +26,7 @@ public class GenericService<TEntity, TContext> : IGenericService<TEntity>
     public void Delete(TEntity entity)
     {
         EntityEntry<TEntity> entityEntry = _context.Set<TEntity>().Remove(entity);
+        entityEntry.State = EntityState.Added;
         _context.SaveChanges();
     }
 

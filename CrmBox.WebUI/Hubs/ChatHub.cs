@@ -35,7 +35,7 @@ namespace CrmBox.WebUI.Hubs
                 Context.ConnectionId);
 
             await Groups.AddToGroupAsync(
-                Context.ConnectionId,roomId.ToString());
+                Context.ConnectionId, roomId.ToString());
 
             await Clients.Caller.SendAsync(
                 "ReceiveMessage",
@@ -77,7 +77,7 @@ namespace CrmBox.WebUI.Hubs
                 message.Text);
         }
 
-        public async Task SetName(string visitorName,string visitorDepartment,string visitorMail)
+        public async Task SetName(string visitorName, string visitorDepartment, string visitorMail)
         {
             var roomName = $"{visitorName}";
             var roomDepartment = $"{visitorDepartment}";
@@ -85,10 +85,20 @@ namespace CrmBox.WebUI.Hubs
 
 
 
+
             var roomId = await _chatRoomService.GetRoomForConnectionId(
                 Context.ConnectionId);
+            ChatRoom chatRoom = new ChatRoom()
+            {
+                OwnerConnectionId = Context.ConnectionId,
+                Mail = visitorMail,
+                Name = visitorName,
+                Department = visitorDepartment,
+                CreatedTime = DateTime.Now
+            };
 
-            await _chatRoomService.SetRoomName(roomId, roomName,roomDepartment, roomMail);
+            await _chatRoomService.SetRoomName(roomId, roomName, roomDepartment, roomMail);
+            await _chatRoomService.AddAsync(chatRoom);
 
             await _agentHub.Clients.All
                 .SendAsync(

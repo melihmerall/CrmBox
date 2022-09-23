@@ -7,7 +7,7 @@ using CrmBox.Core.Domain;
 
 namespace CrmBox.Application.Interfaces.Chat
 {
-    public interface IChatRoomService
+    public interface IChatRoomService:IGenericService<ChatRoom>
     {
         Task<Guid> CreateRoom(string connectionId);
 

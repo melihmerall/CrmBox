@@ -5,11 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using CrmBox.Application.Interfaces.Chat;
 using CrmBox.Core.Domain;
+using CrmBox.Persistance.Context;
 
 namespace CrmBox.Application.Services.Chat
 {
-    public class InMemoryChatRoomService : IChatRoomService
+    public class InMemoryChatRoomService : GenericService<ChatRoom, CrmBoxIdentityContext> ,IChatRoomService
     {
+
+
+
         private readonly Dictionary<Guid, ChatRoom> _roomInfo
             = new Dictionary<Guid, ChatRoom>();
 
@@ -78,6 +82,10 @@ namespace CrmBox.Application.Services.Chat
         {
             return Task.FromResult(
                 _roomInfo as IReadOnlyDictionary<Guid, ChatRoom>);
+        }
+
+        public InMemoryChatRoomService(CrmBoxIdentityContext context) : base(context)
+        {
         }
     }
 }
