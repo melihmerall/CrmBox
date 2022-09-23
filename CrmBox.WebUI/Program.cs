@@ -27,14 +27,17 @@ using Microsoft.AspNetCore.Http.Features;
 using CrmBox.WebUI.Helper.Twilio;
 using CrmBox.WebUI.Helper;
 using CrmBox.Application.Services.Chat;
-using TwilioSettings = CrmBox.WebUI.Helper.Twilio.TwilioSettings;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var provider = builder.Services.BuildServiceProvider();
 var configuration = provider.GetRequiredService<IConfiguration>();
 
-builder.Services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
+
+
 builder.Services.Configure<EmailHelper>(configuration.GetSection("EmailSender"));
+builder.Services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
+
 
 
 
@@ -71,6 +74,8 @@ builder.Services.Configure<FormOptions>(x => x.ValueCountLimit = 1000000);
 
 builder.Services.AddSingleton<IChatRoomService,
 InMemoryChatRoomService>();
+
+builder.Services.AddScoped<EmailHelper, EmailHelper>();
 
 //Add Cache
 builder.Services.AddMemoryCache();

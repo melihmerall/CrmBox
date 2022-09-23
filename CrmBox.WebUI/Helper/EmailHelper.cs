@@ -15,9 +15,6 @@ namespace CrmBox.WebUI.Helper
 
         private readonly IConfiguration _config;
 
-        public EmailHelper()
-        {
-        }
 
         public EmailHelper(IConfiguration config)
         {
@@ -28,8 +25,8 @@ namespace CrmBox.WebUI.Helper
         {
 
             MailMessage mailMessage = new MailMessage();
-            mailMessage.IsBodyHtml = true;
-            mailMessage.From = new MailAddress("crmboxtest@hotmail.com");
+
+            mailMessage.From = new MailAddress(_config.GetSection("SenderMailAdres").Value);
             mailMessage.To.Add(userEmail);
 
             mailMessage.Subject = subject;
@@ -37,8 +34,9 @@ namespace CrmBox.WebUI.Helper
             mailMessage.Body = message;
 
             SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("crmboxtest@hotmail.com", "Ablzz2w.");
-            client.Host = "smtp-mail.outlook.com";
+            
+            client.Credentials = new System.Net.NetworkCredential(_config.GetSection("CredentialsUserName").Value, _config.GetSection("CredentialsPassword").Value);
+            client.Host = _config.GetSection("EmailHost").Value;
             client.Port = 587;
             client.EnableSsl = true;
 
@@ -60,6 +58,7 @@ namespace CrmBox.WebUI.Helper
             mailMessage.Body = confirmationLink;
 
             SmtpClient client = new SmtpClient();
+            client.UseDefaultCredentials = false;
             client.Credentials = new System.Net.NetworkCredential(_config.GetSection("CredentialsUserName").Value, _config.GetSection("CredentialsPassword").Value);
             client.Host = _config.GetSection("EmailHost").Value;
             client.Port = 587;

@@ -25,13 +25,15 @@ namespace CrmBox.WebUI.Controllers
         readonly SignInManager<AppUser> _signInManager;
         readonly UserManager<AppUser> _userManager;
         readonly RoleManager<AppRole> _roleManager;
+        readonly EmailHelper _emailHelper; 
 
 
-        public AuthController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        public AuthController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, EmailHelper emailHelper)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
+            _emailHelper = emailHelper;
         }
 
 
@@ -119,8 +121,8 @@ namespace CrmBox.WebUI.Controllers
                 {
                     var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var link = $"<a target=\"_blank\" href=\"https://localhost:7001{Url.Action("UpdatePassword", "Auth", new { userId = user.Id, token = HttpUtility.UrlEncode(resetToken) })}\">Yeni şifre talebi için tıklayınız</a>";
-                    EmailHelper emailHelper = new EmailHelper();
-                    emailHelper.SendEmailPasswordReset(model.Email, link);
+                   
+                    _emailHelper.SendEmailPasswordReset(model.Email, link);
                     ViewBag.State = true;
                 }
                 else { ViewBag.State = false; }

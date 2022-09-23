@@ -25,11 +25,13 @@ namespace CrmBox.WebUI.Controllers
         IMemoryCache _memoryCache;
         readonly TwilioSettings _twilioOptions;
         const string cacheKey = "customerKey";
-        public CustomersController(ICustomerService customerService, IMemoryCache memoryCache, IOptions<TwilioSettings> twilioOptions)
+        private readonly EmailHelper _emailHelper;
+        public CustomersController(ICustomerService customerService, IMemoryCache memoryCache, IOptions<TwilioSettings> twilioOptions, EmailHelper emailHelper)
         {
             _customerService = customerService;
             _memoryCache = memoryCache;
             _twilioOptions = twilioOptions.Value;
+            _emailHelper = emailHelper;
         }
 
         [HttpGet]
@@ -216,8 +218,8 @@ namespace CrmBox.WebUI.Controllers
                     try
                     {
 
-                        EmailHelper emailHelper = new EmailHelper();
-                        emailHelper.SendEmail(model.Mail, model.Messages,model.Subject);
+                     
+                        _emailHelper.SendEmail(model.Mail, model.Messages,model.Subject);
                         ViewBag.State = true;
                     }
                     catch (Exception ex)
