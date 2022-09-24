@@ -19,14 +19,17 @@ namespace CrmBox.WebUI.Controllers
         private readonly CrmBoxIdentityContext _context;
         private readonly IMapper _mapper;
         private readonly IHubContext<ChatHub> _hubContext;
+        private ILogger<MessagesController> _logger;
 
         public MessagesController(CrmBoxIdentityContext context,
             IMapper mapper,
-            IHubContext<ChatHub> hubContext)
+            IHubContext<ChatHub> hubContext,
+            ILogger<MessagesController> logger)
         {
             _context = context;
             _mapper = mapper;
             _hubContext = hubContext;
+            _logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -78,6 +81,7 @@ namespace CrmBox.WebUI.Controllers
             };
 
             _context.Messages.Add(msg);
+            _logger.LogInformation(msg+" mesaj eklendi.");
             await _context.SaveChangesAsync();
 
             // Broadcast the message
@@ -100,6 +104,7 @@ namespace CrmBox.WebUI.Controllers
 
             _context.Messages.Remove(message);
             await _context.SaveChangesAsync();
+            _logger.LogInformation(message+ " mesaj silindi.");
 
             await _hubContext.Clients.All.SendAsync("removeChatMessage", message.Id);
 

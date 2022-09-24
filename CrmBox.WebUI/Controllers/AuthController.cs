@@ -107,6 +107,7 @@ namespace CrmBox.WebUI.Controllers
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
+            _logger.LogInformation("Sistemden çıkış yapıldı.");
             return RedirectToAction("Login", "Auth");
         }
 
