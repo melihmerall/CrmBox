@@ -15,5 +15,6 @@ namespace CrmBox.Application.Services.Chat
         public ChatMessageService(CrmBoxIdentityContext context) : base(context)
         {
         }
+
     }
 }

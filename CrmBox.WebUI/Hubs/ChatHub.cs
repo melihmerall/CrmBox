@@ -9,19 +9,24 @@ using Microsoft.AspNetCore.SignalR;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using CrmBox.Application.Interfaces;
 using CrmBox.Application.Interfaces.Chat;
 
 namespace CrmBox.WebUI.Hubs
 {
     public class ChatHub : Hub
     {
+        private readonly IChatMessageService _chatMessageService;
         private readonly IChatRoomService _chatRoomService;
         private readonly IHubContext<AgentHub> _agentHub;
+        
 
-        public ChatHub(IChatRoomService chatRoomService, IHubContext<AgentHub> agentHub)
+        public ChatHub(IChatRoomService chatRoomService, IHubContext<AgentHub> agentHub,IChatMessageService chatMessageService)
         {
             _chatRoomService = chatRoomService;
             _agentHub = agentHub;
+            _chatMessageService = chatMessageService;
+
         }
 
         public override async Task OnConnectedAsync()
@@ -51,6 +56,7 @@ namespace CrmBox.WebUI.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
+        // Müşteri tarafında mesaj gönderme
         public async Task SendMessage(string name, string text)
         {
 
@@ -66,9 +72,7 @@ namespace CrmBox.WebUI.Hubs
                 SentDT = DateTimeOffset.UtcNow
             };
             await _chatRoomService.AddMessage(roomId, message);
-
-
-
+            await _chatMessageService.AddAsync(message);
             // Broadcast to all clients
             await Clients.Group(roomId.ToString()).SendAsync(
                 "ReceiveMessage",

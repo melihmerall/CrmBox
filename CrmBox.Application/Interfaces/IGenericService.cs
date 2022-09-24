@@ -14,7 +14,4 @@ public interface IGenericService<TEntity>
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> filter = null);
         TEntity? Get(Expression<Func<TEntity, bool>> filter);
 
-
-
-
     }
