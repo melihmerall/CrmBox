@@ -4,6 +4,7 @@ var chatterName = 'Visitor';
 var chatterDepartment = "Departmen";
 var chatterMail = "Mail";
 
+}
 
 var dialogEl = document.getElementById('chatDialog');
 

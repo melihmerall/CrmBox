@@ -11,28 +11,35 @@ namespace CrmBox.WebUI.Hubs
         private readonly IChatMessageService _chatMessageService;
         private readonly IChatRoomService _chatRoomService;
         private readonly IHubContext<ChatHub> _chatHub;
-     
-
 
 
         public AgentHub(
             IChatRoomService chatRoomService,
-            IHubContext<ChatHub> chatHub,IChatMessageService chatMessageService)
+            IHubContext<ChatHub> chatHub, IChatMessageService chatMessageService)
         {
             _chatRoomService = chatRoomService;
             _chatHub = chatHub;
 
-            _chatMessageService= chatMessageService;
+            _chatMessageService = chatMessageService;
 
         }
 
         public override async Task OnConnectedAsync()
         {
+
+            // Get all active rooms
             await Clients.Caller.SendAsync(
                 "ActiveRooms",
                 await _chatRoomService.GetAllRooms());
 
             await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            
+
+            await base.OnDisconnectedAsync(exception);
         }
 
         // operatör tarafı mesaj gönderme
@@ -43,7 +50,7 @@ namespace CrmBox.WebUI.Hubs
                 SenderName = Context.User.Identity.Name,
                 Text = text,
                 SentDT = DateTimeOffset.UtcNow
-                
+
             };
 
             await _chatRoomService.AddMessage(roomId, message);
@@ -66,5 +73,6 @@ namespace CrmBox.WebUI.Hubs
             await Clients.Caller.SendAsync(
                 "ReceiveMessages", history);
         }
+
     }
 }

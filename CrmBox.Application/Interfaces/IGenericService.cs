@@ -13,5 +13,6 @@ public interface IGenericService<TEntity>
         Task DeleteAsync(int id);
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> filter = null);
         TEntity? Get(Expression<Func<TEntity, bool>> filter);
+        
 
     }

@@ -6,12 +6,54 @@ var agentConnection = new signalR.HubConnectionBuilder()
 
 agentConnection.on('ActiveRooms', loadRooms);
 
+
 agentConnection.onclose(function () {
     handleDisconnected(startAgentConnection);
 });
 
 function startAgentConnection() {
     agentConnection
+        .start()
+        .catch(function (err) {
+            console.error(err);
+        });
+}
+
+var onlineConnection = new signalR.HubConnectionBuilder()
+    .withUrl('/userOnlineHub')
+    .build();
+
+onlineConnection.on('GetUserCounter', function (userCounter) {
+    document.getElementById("usersOnline").innerHTML = userCounter;
+});
+
+
+onlineConnection.onclose(function () {
+    handleDisconnected(startOnlineConnection);
+});
+
+function startOnlineConnection() {
+    onlineConnection
+        .start()
+        .catch(function (err) {
+            console.error(err);
+        });
+}
+var customerConnection = new signalR.HubConnectionBuilder()
+    .withUrl('/onlineCustomerHub')
+    .build();
+
+customerConnection.on('GetCustomerCounter', function (customerCounter) {
+    document.getElementById("customerOnline").innerHTML = customerCounter;
+});
+
+
+customerConnection.onclose(function () {
+    handleDisconnected(startCustomerConnection);
+});
+
+function startCustomerConnection() {
+    customerConnection
         .start()
         .catch(function (err) {
             console.error(err);
@@ -27,6 +69,7 @@ chatConnection.onclose(function () {
 });
 
 chatConnection.on('ReceiveMessage', addMessage);
+chatConnection.onclose('UserOffline',addMessage);
 agentConnection.on('ReceiveMessages', addMessages);
 
 function startChatConnection() {
@@ -51,7 +94,8 @@ function sendMessage(text) {
 function ready() {
     startAgentConnection();
     startChatConnection();
-
+    startOnlineConnection();
+    startCustomerConnection();
     var chatFormEl = document.getElementById('chatForm');
     chatFormEl.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -121,7 +165,7 @@ function loadRooms(rooms) {
 
 function createRoomButton(id, roomInfo) {
     var anchorEl = document.createElement('a');
-    anchorEl.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+    anchorEl.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2';
     anchorEl.setAttribute('data-id', id);
     anchorEl.innerHTML = roomInfo.name + '<br/> ' + roomInfo.department + '<br/>' + roomInfo.mail;
     anchorEl.href = '#';

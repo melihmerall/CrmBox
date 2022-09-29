@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using CrmBox.Application.Interfaces;
+using CrmBox.Core.Domain;
 using CrmBox.Core.Domain.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -34,7 +35,7 @@ public class GenericService<TEntity, TContext> : IGenericService<TEntity>
     {
         TEntity? model = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
         EntityEntry<TEntity> entityEntry = _context.Set<TEntity>().Remove(model);
-        _context.SaveChanges();
+         _context.SaveChanges();
     }
 
     public TEntity? Get(Expression<Func<TEntity, bool>> filter)
@@ -55,4 +56,5 @@ public class GenericService<TEntity, TContext> : IGenericService<TEntity>
         updateEntity.State = EntityState.Modified;
         _context.SaveChanges();
     }
+
 }

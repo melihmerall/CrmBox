@@ -20,7 +20,7 @@ namespace CrmBox.Application.Interfaces.Chat
         Task<IEnumerable<ChatMessage>> GetMessageHistory(Guid roomId);
 
         Task<IReadOnlyDictionary<Guid, ChatRoom>> GetAllRooms();
+        Task<Guid> DeleteRoom(string connectionId);
 
-     
     }
 }

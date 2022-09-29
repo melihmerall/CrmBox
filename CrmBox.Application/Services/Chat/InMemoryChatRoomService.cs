@@ -11,7 +11,13 @@ namespace CrmBox.Application.Services.Chat
 {
     public class InMemoryChatRoomService : GenericService<ChatRoom, CrmBoxIdentityContext> ,IChatRoomService
     {
+        readonly CrmBoxIdentityContext _context;
 
+        public InMemoryChatRoomService(CrmBoxIdentityContext context ) : base(context)
+        {
+            _context = context;
+  
+        }
 
 
         private readonly Dictionary<Guid, ChatRoom> _roomInfo
@@ -25,10 +31,31 @@ namespace CrmBox.Application.Services.Chat
             _roomInfo[id] = new ChatRoom
             {
                 OwnerConnectionId = connectionId
-                
+
             };
             return Task.FromResult(id);
+
         }
+
+        public Task<Guid> DeleteRoom(string connectionId)
+        {
+            // if customer close the client, i take that connId and remove to dictionary.
+            // in this way, customer room is remove on my operator screen.
+            var foundRoom = _roomInfo.FirstOrDefault(
+                x => x.Value.OwnerConnectionId == connectionId);
+            _roomInfo.Remove(foundRoom.Key);//remove from dictionary.
+
+            var chatRoom = _context.Set<ChatRoom>().FirstOrDefault(c=>c.OwnerConnectionId==connectionId);
+            if (chatRoom != null)
+            {// if chatRoom is not null, remove to database, because user disconnect.
+                _context.Set<ChatRoom>().Remove(chatRoom);
+                _context.SaveChanges();
+                return (Task<Guid>)Task.CompletedTask;
+            }
+
+            return (Task<Guid>)Task.CompletedTask;
+        }
+
 
         public Task<Guid> GetRoomForConnectionId(string connectionId)
         {
@@ -83,9 +110,7 @@ namespace CrmBox.Application.Services.Chat
             return Task.FromResult(
                 _roomInfo as IReadOnlyDictionary<Guid, ChatRoom>);
         }
+  
 
-        public InMemoryChatRoomService(CrmBoxIdentityContext context) : base(context)
-        {
-        }
     }
 }

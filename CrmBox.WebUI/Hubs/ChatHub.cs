@@ -19,9 +19,9 @@ namespace CrmBox.WebUI.Hubs
         private readonly IChatMessageService _chatMessageService;
         private readonly IChatRoomService _chatRoomService;
         private readonly IHubContext<AgentHub> _agentHub;
-        
 
-        public ChatHub(IChatRoomService chatRoomService, IHubContext<AgentHub> agentHub,IChatMessageService chatMessageService)
+        private static int Count = 0;
+        public ChatHub(IChatRoomService chatRoomService, IHubContext<AgentHub> agentHub, IChatMessageService chatMessageService)
         {
             _chatRoomService = chatRoomService;
             _agentHub = agentHub;
@@ -31,17 +31,23 @@ namespace CrmBox.WebUI.Hubs
 
         public override async Task OnConnectedAsync()
         {
+            //
             if (Context.User.Identity.IsAuthenticated)
             {
                 await base.OnConnectedAsync();
                 return;
             }
+
+
+            //
             var roomId = await _chatRoomService.CreateRoom(
                 Context.ConnectionId);
 
+            //
             await Groups.AddToGroupAsync(
                 Context.ConnectionId, roomId.ToString());
 
+            // first connection default messaage to customer.
             await Clients.Caller.SendAsync(
                 "ReceiveMessage",
                 "Müşteri Destek Sistemi",
@@ -51,12 +57,15 @@ namespace CrmBox.WebUI.Hubs
             await base.OnConnectedAsync();
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
-            return base.OnDisconnectedAsync(exception);
+           
+            await _chatRoomService.DeleteRoom(Context.ConnectionId);
+
+            await base.OnDisconnectedAsync(exception);
         }
 
-        // Müşteri tarafında mesaj gönderme
+        // sending message to customer base
         public async Task SendMessage(string name, string text)
         {
 
@@ -64,7 +73,7 @@ namespace CrmBox.WebUI.Hubs
                 _chatRoomService.GetRoomForConnectionId(
                     Context.ConnectionId);
 
-
+            //
             var message = new ChatMessage()
             {
                 SenderName = name,
@@ -86,9 +95,6 @@ namespace CrmBox.WebUI.Hubs
             var roomName = $"{visitorName}";
             var roomDepartment = $"{visitorDepartment}";
             var roomMail = $"{visitorMail}";
-
-
-
 
             var roomId = await _chatRoomService.GetRoomForConnectionId(
                 Context.ConnectionId);

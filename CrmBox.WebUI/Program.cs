@@ -248,5 +248,7 @@ app.MapControllerRoute(
 
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<AgentHub>("/agentHub");
+app.MapHub<UserOnlineHub>("/userOnlineHub");
+app.MapHub<OnlineCustomerHub>("/onlineCustomerHub");
 app.Run();
 
