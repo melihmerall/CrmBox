@@ -81,6 +81,8 @@ namespace CrmBox.WebUI.Hubs
                 SentDT = DateTimeOffset.UtcNow
             };
             await _chatRoomService.AddMessage(roomId, message);
+
+            // save to database ChatRooms
             await _chatMessageService.AddAsync(message);
             // Broadcast to all clients
             await Clients.Group(roomId.ToString()).SendAsync(
