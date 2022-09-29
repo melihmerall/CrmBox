@@ -72,8 +72,8 @@ builder.Services.AddDbContext<CrmBoxLogContext>();
 
 builder.Services.Configure<FormOptions>(x => x.ValueCountLimit = 1000000);
 
-builder.Services.AddSingleton<IChatRoomService,
-InMemoryChatRoomService>();
+builder.Services.AddSingleton<IChatRoomService, InMemoryChatRoomService>();
+builder.Services.AddSingleton<IChatMessageService, ChatMessageService>();
 
 builder.Services.AddScoped<EmailHelper, EmailHelper>();
 
@@ -121,7 +121,7 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 5;
         //options.Password.RequiredUniqueChars = 1;
-        
+
 
 
         // Lockout settings.
@@ -203,7 +203,7 @@ policy => policy.RequireClaim("Send Sms"));
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.AccessDeniedPath = new PathString("/Auth/AccessDenied");
- 
+
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -211,11 +211,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     // Cookie settings
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-   
+
     options.LoginPath = "/Auth/Login";
     options.AccessDeniedPath = "/Auth/AccessDenied";
     options.SlidingExpiration = true;
-  
+
 });
 
 
@@ -229,7 +229,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandlerMiddleware();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    
+
 
 }
 
@@ -254,5 +254,7 @@ app.MapControllerRoute(
 
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<AgentHub>("/agentHub");
+app.MapHub<UserOnlineHub>("/userOnlineHub");
+app.MapHub<OnlineCustomerHub>("/onlineCustomerHub");
 app.Run();
 

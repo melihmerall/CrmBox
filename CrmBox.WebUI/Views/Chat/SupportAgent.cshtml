@@ -1,5 +1,4 @@
-﻿
-@model ExploreCalifornia.Pages.SupportAgentModel
+﻿@model ExploreCalifornia.Pages.SupportAgentModel
 @{
     ViewData["Title"] = "Support agent dashboard";
     ViewData["Subtitle"] = "Connect with customers and answer questions live.";
@@ -10,6 +9,7 @@
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
 
     <script src="~/js/agent.js"></script>
+
 }
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
 <link rel="stylesheet" href="~/css/agent.css" />
@@ -17,27 +17,69 @@
 
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-4">
+    <div class="row ">
+        @* <div class="col-3 " style="border-right: black solid 2px">
+        <div class="list-group">
+        <h3>Active Operator =  <span id="usersOnline"></span></h3><br />
+        <h3>Active Customer =  <span id="customerOnline"></span></h3><br />
+
+        </div>
+        </div>*@
+        <div class="col-4">
+            <h3>Support Request</h3><br />
             <div id="roomList" class="list-group">
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <ul id="chatHistory" class="card-body"></ul>
-                    </div>
+
+        <div class="col-6">
+            <!-- DIRECT CHAT SUCCESS -->
+            <div class="card card-success card-outline direct-chat direct-chat-success">
+                <div class="card-header">
+                    <h3 class="card-title">Direct Chat</h3>
+
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <form id="chatForm" class="form-inline mt-2">
-                        <input id="messageTextbox" type="text" placeholder="Type a message" class="form-control mr-sm-2 flex-grow-1" />
-                        <button type="submit" class="btn btn-primary">Send</button>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="direct-chat-messages">
+                        <div id="chatHistory" class="direct-chat-msg">
+                        </div>
+                        <span id="userLeave"></span>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <form id="chatForm" action="#" method="post">
+                        <div class="input-group">
+                            <input id="messageTextbox" type="text" name="message" placeholder="Type Message ..." class="form-control">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-success">Send</button>
+                            </span>
+                        </div>
                     </form>
                 </div>
+                <!-- /.card-footer-->
             </div>
+            <!--/.direct-chat -->
         </div>
     </div>
 </div>
+
+
+@*<div class="col-md-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <ul id="chatHistory" class="card-body"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form id="chatForm" class="form-inline mt-2">
+                <input id="messageTextbox" type="text" placeholder="Type a message" class="form-control mr-sm-2 flex-grow-1" />
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+</div>*@

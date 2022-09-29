@@ -1,7 +1,10 @@
 ﻿
 
 var chatterName = 'Visitor';
+var chatterDepartment = "Departmen";
+var chatterMail = "Mail";
 
+}
 
 var dialogEl = document.getElementById('chatDialog');
 
@@ -37,7 +40,7 @@ function onConnected() {
     var messageTextboxEl = document.getElementById('messageTextbox');
     messageTextboxEl.focus();
 
-    connection.invoke('SetName', chatterName);
+    connection.invoke('SetName', chatterName, chatterDepartment, chatterMail);
 }
 
 
@@ -63,15 +66,18 @@ function ready() {
         e.target[0].value = '';
         sendMessage(text);
     });
-
+    // This section, first screen for customer. 
     var welcomePanelEl = document.getElementById('chatWelcomePanel');
     welcomePanelEl.addEventListener('submit', function (e) {
         e.preventDefault();
-
         var name = e.target[0].value;
+        var department = e.target[1].value;
+        var mail = e.target[2].value;
         if (name && name.length) {
             welcomePanelEl.style.display = 'none';
             chatterName = name;
+            chatterDepartment = department;
+            chatterMail = mail;
             startConnection();
         }
     });

@@ -4,6 +4,7 @@ using CrmBox.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrmBox.Persistance.Migrations.CrmBoxIdentity
 {
     [DbContext(typeof(CrmBoxIdentityContext))]
-    partial class CrmBoxIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20220921140211_chatAdding")]
+    partial class chatAdding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +46,7 @@ namespace CrmBox.Persistance.Migrations.CrmBoxIdentity
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("CrmBox.Core.Domain.ChatRoom", b =>
@@ -58,12 +60,6 @@ namespace CrmBox.Persistance.Migrations.CrmBoxIdentity
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Mail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -72,7 +68,7 @@ namespace CrmBox.Persistance.Migrations.CrmBoxIdentity
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatRooms");
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("CrmBox.Core.Domain.Identity.AppRole", b =>

@@ -12,5 +12,7 @@ namespace CrmBox.Core.Domain
     {
         public string OwnerConnectionId { get; set; }
         public string Name { get; set; }
+        public string Department { get; set; }
+        public string Mail { get; set; }
     }
 }
