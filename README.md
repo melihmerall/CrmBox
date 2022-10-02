@@ -1,7 +1,7 @@
 # CrmBox
 
-## Proje Bağlantı adresi:
+## Live Server:
 ## http://85.153.156.38:7001/
 
-## Müşteri tarafı bağlantı adresi:
+## Live server for customer:
 ## http://85.153.156.38:7143/home/index
