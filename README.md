@@ -4,4 +4,4 @@
 
 # Server Side Example
 
-## www.bahohost.site
+## www.bahahost.site
